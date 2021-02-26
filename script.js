@@ -61,7 +61,7 @@ function showTips() {
     
     
     //when all tips shown, delete the cookie so they dont show anymore
-    document.cookie = 'userfirstusetime=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    localStorage.removeItem("userfirstusetime");
 }
 
 
@@ -79,8 +79,8 @@ function updateSubjects() { //from oldusers
     //get subjects from cookie
         let regex = /program=({.+})/;
         let final = {};
-        let subjects = document.cookie.match(regex);
-        final = JSON.parse(subjects[1]);
+        let subjects = localStorage.getItem("program");
+        final = JSON.parse(subjects);
     
     //start adding subjects to each day
     for (let day of ['#ponedelnik', '#vtornik', '#srqda', '#chetvurtuk', '#petuk']) {
@@ -425,7 +425,7 @@ function finalize() {
         buttons: {
             'Информацията е вярна': function () {
                 $(this).dialog("close");
-                document.cookie = `program=${JSON.stringify(allsubj)};expires=${cookieExpire};path=/`; 
+                localStorage.setItem("program", `${JSON.stringify(allsubj)}`);
                 checkCookie();
             },
             'Има допусната грешка': function () {
@@ -455,28 +455,35 @@ function getsubject(week, subjects) { //tursi koi predmet ima sega potrebitelq
         case 5:
             date = 'петък';
             break;
+        case 6: 
+            date = 'събота';
+        case 7:
+            date = 'неделя';
     }
-    for (let sub of subjects[date][week]) {
-        let endT = sub.ends.split(":");
-        if (endT[0] > hours) {
-            displaySubject(sub);
-            return;
-        } else if (endT[0] == hours) {
-            if (endT[1] >= minutes) {
+    if (subjects[date]) {
+        for (let sub of subjects[date][week]) {
+            let endT = sub.ends.split(":");
+            if (endT[0] > hours) {
                 displaySubject(sub);
                 return;
+            } else if (endT[0] == hours) {
+                if (endT[1] >= minutes) {
+                    displaySubject(sub);
+                    return;
+                }
+            } else { //ako nqma poveche chasove
+                subjectEl.innerText = 'Днес нямате повече часове.';
+                $('#olduser').show();
             }
-        } else { //ako nqma poveche chasove
-            subjectEl.innerText = 'Днес нямате повече часове.';
-            $('#olduser').show();
         }
-    }
-    subjectEl.innerText = 'Днес нямате часове.';
+    } else {
+    subjectEl.innerText = 'Програмата ви за днес е празна.';
     $('#olduser').show();
+    }
 }
 
 function getWeek(subjects) { //pita dali e chetna ili nechetna sedmica
-    if(document.cookie.match('userfirstusetime=true')) //pokazva na potrebitelq nqkoi hintove pri purvo polzvane
+    if(localStorage.getItem("userfirstusetime")) //pokazva na potrebitelq nqkoi hintove pri purvo polzvane
         showTips();
     
     $(function () {
@@ -528,12 +535,16 @@ function displaySubject(sub) { //izkarva predmeta v dom
 function checkCookie() { //proverqva dali potrebitelq vliza za purvi put ili ve4e e vkaral predmeti
     let regex = /program=({.+})/;
     let final = {};
-    let subjects = document.cookie.match(regex);
+    
+    
+    let subjects = localStorage.getItem("program");
+    console.log(subjects);
+    
     if (subjects === null) {
         createSubjects();
     } else {
-        final = JSON.parse(subjects[1]);
-        getWeek(final);
+        subjects = JSON.parse(subjects);
+        getWeek(subjects);
     }
 }
 
@@ -554,7 +565,7 @@ function createSubjects() { //pri purvo polzvane kara potrebitelq da vkara predm
                 $(this).dialog("close");
                 $("#tabs").tabs();
                 $("#allforms").show();
-                document.cookie = 'userfirstusetime=true'; //polzvame za da dadem hintove pri purvo polzvane
+                localStorage.setItem("userfirstusetime", "true"); //polzvame za da dadem hintove pri purvo polzvane
             }
         }
         ]
