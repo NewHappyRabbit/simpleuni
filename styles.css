@@ -363,6 +363,96 @@ form button[type="submit"] {
     width: 100%;
 }
 
+.backbutton {
+    text-transform: uppercase;
+    letter-spacing: 0.10rem;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.backbutton:after {
+    border-radius: 3px;
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+}
+
+.backbutton:before {
+    border-radius: 3px;
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 0%;
+    height: 100%;
+    background-color: #fc6203;
+    transition: all 0.3s;
+    z-index: -1;
+}
+
+.backbutton:hover {
+    color: #fff;
+}
+
+.backbutton:active {
+    background-color: #fc6203;
+}
+
+.backbutton:hover:before {
+    width: 100%;
+}
+
+.finishbutton {
+    text-transform: uppercase;
+    letter-spacing: 0.10rem;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.finishbutton:after {
+    border-radius: 3px;
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+}
+
+.finishbutton:before {
+    border-radius: 3px;
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    background-color: #38e835;
+    transition: all 0.3s;
+    z-index: -1;
+}
+
+.finishbutton:hover {
+    color: #fff;
+}
+
+.finishbutton:active {
+    background-color: #38e835;
+}
+
+.finishbutton:hover:before {
+    width: 100%;
+}
+
 #settingsbutton {
     position: absolute;
     width: 40px;
@@ -435,7 +525,7 @@ body {
 
 .predmet {
     padding: 10px !important;
-    
+
 }
 
 .ui-accordion-header {
@@ -477,7 +567,6 @@ body {
 }
 
 #tip-1 {
-    display: none;
     height: 120px;
     position: absolute;
     left: -230px;
@@ -485,6 +574,60 @@ body {
     z-index: 101;
 }
 
-.tip-1-svg {
+.tip-1-svg * {
     stroke: white !important;
+}
+
+#tip-1-mobile {
+    position: absolute;
+    top: -150px;
+    left: -25vw;
+    display: block;
+    width: 100vw;
+}
+
+.tip-1-svg-mobile * {
+    stroke: white !important;
+}
+
+.tip-1-svg-mobile path:nth-of-type(2) {
+    fill: white !important;
+}
+
+#add-subject-hint-mobile {
+        display: block;
+        width: 60vw;
+        margin-left: 10px;
+        margin-top: 10px;
+    }
+
+#finalize .ul-title {
+    display: block;
+    text-align: center;
+    font-weight: bold;
+}
+
+
+/* MOBILE UI */
+
+@media only screen and (max-width: 600px) {
+    .ui-tabs-tab {
+        font-size: 0.9rem;
+    }
+    
+    .ui-tabs-tab a {
+        padding: 4px !important;
+    }
+    
+/*
+    .finalize-buttons {
+        width: 40%;
+        font-size: 0.9rem !important;
+    }
+*/
+    
+    
+    
+    
+    
 }

@@ -36,7 +36,6 @@
                     </div>
                     <div class="add-new-subject-button">
                         <img src="svg/plus.svg" onclick="addSubject(this.parentNode.previousElementSibling.id)">
-                        <img id="add-subject-hint" src="svg/add-subject.svg">
                     </div>
                 </div>
                 <div id="tabs-2">
@@ -72,32 +71,37 @@
                 </div>
             </div>
         </div>
-        <div id="finalize" title="Почти сме готови" style="display: none;">
-            <p>
-                <span class="ui-icon ui-icon-circle-check"></span>
-                Остана само да проверите дали информацията е вярна.
-            </p>
+        <div id="finalize" title="✔️ Проверете дали всичко е вярно" style="display: none;">
             <span class="ul-title">Понеделник</span>
             <ul id="finalize-ponedelnik">
             </ul>
+            <hr>
             <span class="ul-title">Вторник</span>
             <ul id="finalize-vtornik">
             </ul>
+            <hr>
             <span class="ul-title">Сряда</span>
             <ul id="finalize-srqda">
             </ul>
+            <hr>
             <span class="ul-title">Четвъртък</span>
             <ul id="finalize-chetvurtuk">
             </ul>
+            <hr>
             <span class="ul-title">Петък</span>
+            
             <ul id="finalize-petuk">
             </ul>
+            <hr>
         </div>
     </div>
 
     <div id="olduser" style="display: none;">
         <div id="week-choose" title="Изберете седмица">
-            <object id="tip-1" type="image/svg+xml" data="svg/tip-1.svg"></object>
+<!--
+            <object class="tips" id="tip-1" type="image/svg+xml" data="svg/tip-1.svg"></object>
+            <object class="tips" id="tip-1-mobile" type="image/svg+xml" data="svg/tip-1-mobile.svg"></object>
+-->
         </div>
 <!--        <object id="settingsbutton" type="image/svg+xml" data="svg/settings.svg"></object>-->
         <svg onclick="openSettings()" id="settingsbutton">
