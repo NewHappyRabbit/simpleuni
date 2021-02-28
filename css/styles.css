@@ -619,12 +619,29 @@ body {
 /* MOBILE UI */
 
 @media only screen and (max-width: 600px) {
-    .ui-tabs-tab {
-        font-size: 0.9rem;
+    
+/*
+    #allforms .ui-tabs-nav {
+        height: 80px;
+    }
+*/
+    
+    #allforms .ui-tabs-tab {
+        font-size: 0.85rem;
     }
     
-    .ui-tabs-tab a {
-        padding: 4px !important;
+    #allforms li.ui-tabs-tab {
+        border: 1px solid #c5c5c5;
+        border-radius: 3px;
+    }
+    
+    #allforms .ui-tabs-anchor {
+        padding: 4px 6px !important;
+    }
+    
+    #allforms li.ui-tabs-tab:nth-of-type(6), #allforms li.ui-tabs-tab:nth-of-type(7) {
+        margin-top: 5px;
+        margin-bottom: 4px;
     }
     
 /*

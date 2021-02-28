@@ -61,19 +61,19 @@ function checkUser() { //proverqva dali potrebitelq vliza za purvi put ili ve4e 
     
     let subjects = localStorage.getItem("program");
     
+    
     if (subjects === null) {
         createSubjects();
     } else {
         subjects = JSON.parse(subjects);
+        if(localStorage.getItem("userfirstusetime")) //pokazva na potrebitelq nqkoi hintove pri purvo polzvane
+            showTips();
         askOddOrEven(subjects);
     }
 }
 
 //////////// OLD USER FUNCTIONS ////////////////
-function askOddOrEven(subjects) { //pita dali e chetna ili nechetna sedmica
-    if(localStorage.getItem("userfirstusetime")) //pokazva na potrebitelq nqkoi hintove pri purvo polzvane
-        showTips();
-    
+function askOddOrEven(subjects) { //pita dali e chetna ili nechetna sedmica    
     $(function () {
         $("#week-choose").dialog({
             resizable: false,
