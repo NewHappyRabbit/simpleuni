@@ -52,7 +52,7 @@ function showTips() {
 }
 
 function shareSubjects() { //generate QR code to share
-    $('#userDiv').append($(`
+    $('body').append($(`
         <div id="qr-share" title="Сподели програма">
             <p>Отворете сайта от друго устройство, изберете бутона "Вече имам програма" и следвайте инструкциите.</p>
         </div>`));

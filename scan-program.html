@@ -65,7 +65,8 @@
             scanner.stop();
             if (document.querySelector('#camera canvas'))
                 document.querySelector('#camera canvas').remove();
-            alert('Gotovo');
+            localStorage.setItem("program", decodedQR);
+            window.location.replace("index.html");
         }
     </script>
 </body>
