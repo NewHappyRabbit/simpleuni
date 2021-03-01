@@ -434,6 +434,8 @@ function createSubjects() { //pri purvo polzvane kara potrebitelq da vkara predm
                 text: 'Продължи',
                 "class": 'continuebutton',
                 click: function () {
+                    $('#qr-svg-link').hide();
+                    $('#qr-svg-object').hide();
                     $(this).dialog("close");
                     $("#tabs").tabs();
                     $("#allforms").show();

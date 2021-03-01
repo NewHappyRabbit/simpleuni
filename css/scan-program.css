@@ -1,14 +1,43 @@
 #camera {
-    display: inline-block;
-    background-color: blue;
+    border: 1px solid black;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    display: none;
 }
 
-#file {
-    display: inline-block;
-    background-color: red;
-}
 
-#camera *, #file * {
+#camera *, #file *, p {
     display: block;
     text-align: center;
+}
+
+#camera canvas {
+    width: 100%;
+}
+
+.container {
+    margin: auto;
+    display: block;
+    width: 30vw;
+    height: 30vw;
+}
+
+label {
+}
+
+.split {
+}
+#camera {
+        margin-top: 10vh;
+    }
+
+@media only screen and (max-width: 600px) {
+    
+    .container {
+        width: 90vw;
+        height: auto;
+    }
+    
+    
+    
 }
