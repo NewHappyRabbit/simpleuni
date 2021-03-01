@@ -57,6 +57,15 @@ function shareSubjects() { //generate QR code to share
             <p>Отворете сайта от друго устройство, изберете бутона "Вече имам програма" и следвайте инструкциите.</p>
         </div>`));
 
+    
+    var dataUriPngImage = document.createElement("img"),
+        u = localStorage.getItem("program"),
+        s = QRCode.generatePNG(u, {
+            ecclevel: "M"
+        });
+    dataUriPngImage.src = s;
+    $('#qr-share').append(dataUriPngImage);
+    
     $("#qr-share").dialog({
         draggable: false,
         modal: true,
@@ -66,13 +75,6 @@ function shareSubjects() { //generate QR code to share
             $('#qr-share').remove();
         }
     });
-    var dataUriPngImage = document.createElement("img"),
-        u = localStorage.getItem("program"),
-        s = QRCode.generatePNG(u, {
-            ecclevel: "M"
-        });
-    dataUriPngImage.src = s;
-    $('#qr-share').append(dataUriPngImage);
 }
 //
 
