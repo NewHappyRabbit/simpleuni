@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Програма уни</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <link rel="stylesheet" href="./css/scan-program.css">
+
+</head>
+
+<body>
+    <div id="camera">
+        <video id="qr-video"></video>
+        <span id="cam-qr-result">None</span>
+    </div>
+    <div id="file">
+        <span>Изберете QR код файлът:</span>
+        <input type="file" id="file-selector">
+        <span id="file-qr-result">None</span>
+    </div>
+    <script type="module">
+        import QrScanner from "./scripts/qr-scanner.min.js";
+        QrScanner.WORKER_PATH = './scripts/qr-scanner-worker.min.js';
+
+        /*    //check if user has camera (is desktop or mobile)
+            QrScanner.hasCamera().then(result => addElements(result ? 'mobile' : 'desktop'));
+            
+            function addElements(device) {
+                if (device == 'desktop') {
+                    
+                }
+            }*/
+
+
+
+        // ####### Web Cam Scanning #######
+        const video = document.getElementById('qr-video');
+        const camQrResult = document.getElementById('cam-qr-result');
+
+        const scanner = new QrScanner(video, result => setResult(camQrResult, result), error => {
+            camQrResult.textContent = error;
+        });
+
+        // ####### File Scanning #######
+        const fileSelector = document.getElementById('file-selector');
+        const fileQrResult = document.getElementById('file-qr-result');
+
+        fileSelector.addEventListener('change', event => {
+            const file = fileSelector.files[0];
+            if (!file) {
+                return;
+            }
+            QrScanner.scanImage(file)
+                .then(result => setResult(fileQrResult, result))
+                .catch(e => setResult(fileQrResult, e || 'No QR code found.'));
+        });
+
+
+        function setResult(label, result) {
+            let decodedQR = decodeURIComponent(result);
+            label.textContent = decodedQR;
+            //console.log(decodedQR);
+        }
+    </script>
+</body>

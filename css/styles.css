@@ -301,7 +301,7 @@ form button[type="submit"] {
     width: 200px;
     display: block;
     margin-top: 20px;
-    margin-left: 135px;
+    margin-left: 65px;
     opacity: 0.8;
 }
 
@@ -514,7 +514,7 @@ body {
     float: none;
 }
 
-.ui-dialog-titlebar-close {
+.ui-dialog-close-hide {
     display: none;
 }
 
@@ -523,6 +523,11 @@ body {
     background-color: white;
     margin-top: 70px;
     padding: 5px 10px;
+}
+
+#settings button {
+    display: block;
+    margin-top: 5px;
 }
 
 #subjectsForms {
@@ -614,6 +619,29 @@ body {
     text-align: center;
     font-weight: bold;
 }
+
+#qr-share img {
+    width: 100%;
+}
+
+#qr-svg {
+    fill: white;
+}
+
+#qr-svg-object, #qr-svg-link {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 50px;
+    height: 50px;
+}
+
+#qr-svg-link {
+    display: block;
+    background-color: transparent;
+    z-index: 2;
+}
+
 
 
 /* MOBILE UI */

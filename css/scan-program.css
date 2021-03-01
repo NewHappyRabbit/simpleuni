@@ -1,0 +1,14 @@
+#camera {
+    display: inline-block;
+    background-color: blue;
+}
+
+#file {
+    display: inline-block;
+    background-color: red;
+}
+
+#camera *, #file * {
+    display: block;
+    text-align: center;
+}

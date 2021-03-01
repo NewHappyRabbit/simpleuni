@@ -9,6 +9,8 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
+    <script src="/scripts/qrjs2.js"></script>
+
     <script src="./scripts/jquery.timepicker.min.js"></script>
     <link rel="stylesheet" href="./css/jquery.timepicker.min.css">
 
@@ -16,7 +18,10 @@
 </head>
 
 <body onload="checkUser()">
-    <div id="subjectsForms" style="display: none">
+    <div id="subjectsForms" style="display: none">  
+        <a id="qr-svg-link" href="scan-program.html" title="Сканирай QR код/Импорт на програма"></a>
+        <object id="qr-svg-object" type="image/svg+xml" data="svg/qr.svg"></object>
+
         <div style="display: none" id="dialog-message" title="Добре дошъл!">
             <p>
                 Сега ще направим бърза и лесна настройка на твоята учебна програма.
@@ -127,6 +132,7 @@
         </svg>
         <div id="settings" style="display: none;">
             <button onclick="editSubjects()">Промени програма</button>
+            <button onclick="shareSubjects()">Сподели програма</button>
         </div>
         <a id="link">
             <span id="subject"></span>
