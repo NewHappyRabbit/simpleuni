@@ -15,7 +15,7 @@
 
 <body>
     <div class="container">
-       <span class="split"></span>
+        <span class="split"></span>
         <div id="camera">
             <p>Посочете QR кодът с камерата.</p>
             <video id="qr-video" style="display: none"></video>
@@ -65,8 +65,36 @@
             scanner.stop();
             if (document.querySelector('#camera canvas'))
                 document.querySelector('#camera canvas').remove();
-            localStorage.setItem("program", decodedQR);
-            window.location.replace("index.html");
+
+            console.log(decodedQR);
+            
+            let request = $.ajax({
+                type: "GET",
+                url: "./temp-jsons/get.php",
+                data: {
+                    filename: decodedQR
+                },
+                dataType: 'JSON',
+                async: false,
+/*                success: function(response) {
+                    console.log(response.msg);
+                    console.log('yes');
+                },
+                failed: function(err) {
+                    console.log(err);
+                    console.log('no');
+                }*/
+            });
+            
+            request.done(function(msg){ //if all good
+                localStorage.setItem("program", msg.msg);
+                alert('Успешно въведен код!');
+                window.location.replace("index.html");
+            })
+            request.fail(function(jqXHR, textStatus) {
+                alert('Възникна грешка: ' + textStatus);
+            })
         }
+
     </script>
 </body>

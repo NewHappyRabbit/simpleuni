@@ -56,20 +56,43 @@ function shareSubjects() { //generate QR code to share
         <div id="qr-share" title="Сподели програма">
             <p>Отворете сайта от друго устройство и изберете картинката с QR код долу-вдясно на страницата.</p>
         </div>`));
-
     
-    var dataUriPngImage = document.createElement("img"),
-        u = localStorage.getItem("program"),
-        s = QRCode.generatePNG(u, {
-            ecclevel: "M"
-        });
-    dataUriPngImage.src = s;
-    $('#qr-share').append(dataUriPngImage);
+    /*var fd=new FormData();
+        fd.append("json",localStorage.getItem("program"));
+        fetch("./temp-jsons/create.php",{method:"POST",body:fd})
+    */
+    
+    let filename = '';
+    
+    $.ajax({
+    type: "POST",
+        url: "./temp-jsons/create.php",
+        data: {
+            program: localStorage.getItem('program')
+        },
+        dataType: 'JSON',
+        async :false,
+            success: function (response) {
+                filename = response.filename;
+            },
+            failed: function (err) {
+                console.log(err);
+            }
+    });
+    
+    
+        var dataUriPngImage = document.createElement("img"),
+            u = filename,
+            s = QRCode.generatePNG(u, {
+                ecclevel: "M"
+            });
+        dataUriPngImage.src = s;
+        $('#qr-share').append(dataUriPngImage);
     
     $("#qr-share").dialog({
         draggable: false,
         modal: true,
-        width: 600,
+        width: 300,
         dialogClass: "qr-dialog",
         close: function () {
             $('#qr-share').remove();
@@ -149,7 +172,7 @@ function getSubject(week, subjects) { //tursi koi predmet ima sega potrebitelq
             date = 'неделя';
             break;
     }
-
+    
     if (subjects[date][week].length) {
         for (let sub of subjects[date][week]) {
             let endT = sub.ends.split(":");
@@ -172,8 +195,6 @@ function getSubject(week, subjects) { //tursi koi predmet ima sega potrebitelq
 }
 
 function displaySubject(sub) { //izkarva predmeta v dom
-    if (sub.startM == 0)
-        sub.startM = '00';
     time = `${sub.starts}-${sub.ends}`;
     if (sub.link.length > 0) {
         if (sub.link.includes('http://'))
