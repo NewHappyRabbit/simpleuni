@@ -13,17 +13,29 @@
     <link rel="stylesheet" href="./css/jquery.timepicker.min.css">
 
     <link rel="stylesheet" href="./css/styles.css">
+    
+    <script type="text/javascript" src="https://npmcdn.com/parse/dist/parse.min.js"></script>
+    <script type="text/javascript" type="text/javascript">
+        Parse.initialize("OhHXlNOYVhnRv5WwWGCijNSuFqS3u77NRiioEIGS","m2g7YwRQe7W2VUdsBtn3MAJxomzUf6azp9FibaWQ"); //PASTE HERE YOUR Back4App APPLICATION ID AND YOUR JavaScript KEY
+        Parse.serverURL = 'https://parseapi.back4app.com/'
+    </script>
 </head>
 
 <body onload="checkUser()">
     <div id="subjectsForms" style="display: none">  
-        <a id="qr-svg-link" href="scan-program.html" title="Сканирай QR код/Импорт на програма"></a>
-        <object id="qr-svg-object" type="image/svg+xml" data="svg/qr.svg"></object>
-
+        <!--<a id="qr-svg-link" href="scan-program.html" title="Сканирай QR код/Импорт на програма"></a>
+        <object id="qr-svg-object" type="image/svg+xml" data="svg/qr.svg"></object>-->
+        
+        
+        
         <div style="display: none" id="dialog-message" title="Добре дошъл!">
             <p>
                 Сега ще направим бърза и лесна настройка на твоята учебна програма.
             </p>
+            <p>или</p>
+            <p>Въведи код за споделяне</p>
+            <input id="programcode" type="text" />
+            <button onclick="activateProgramCode()">Въведи</button>
         </div>
         <div id="allforms">
             <div id="tabs">
@@ -130,7 +142,8 @@
         </svg>
         <div id="settings" style="display: none;">
             <button onclick="editSubjects()">Промени програма</button>
-            <button onclick="shareSubjects()">Сподели програма</button>
+            <button onclick="createProgramCode()">Сподели програма</button>
+            <!--<button onclick="shareSubjects()">Сподели програма</button>-->
         </div>
         <a id="link">
             <span id="subject"></span>

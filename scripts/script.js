@@ -38,6 +38,40 @@ $.fn.animateRotate = function (angle, duration, easing, complete) { //this is fo
 
 
 //TODO FUNCTIONS
+function activateProgramCode() {
+    let code = document.getElementById("programcode").value;
+    
+    const Back4app = Parse.Object.extend("programs");
+    const back4app = new Parse.Query(Back4app);
+
+    back4app.get(code)
+    .then((program) => {
+      // The object was retrieved successfully.
+        localStorage.setItem("program", JSON.stringify(program.attributes.Program));
+        alert('Успешно въведена програма!');
+        window.location.replace("index.html");
+    }, (error) => {
+      // The object was not retrieved successfully.
+        alert('Възникна грешка: ' + error);
+    });
+    
+    
+}
+function createProgramCode() {
+    const Back4app = Parse.Object.extend("programs");
+    const back4app = new Back4app();
+
+    let program = JSON.parse(localStorage.getItem("program"));
+    back4app.set("Program", program);
+    back4app.save()
+        .then((object) => {
+            // Success
+            alert('Вашият код за споделяне: ' + object.id);
+        }, (error) => {
+            // Save fails
+            alert('Възникна грешка: ' + error.message);
+        });
+}
 
 function showTips() {
     //first check if its desktop or mobile to show appropriate tip (cus random sizes and etc)
@@ -49,55 +83,6 @@ function showTips() {
 
     //when all tips shown, delete the cookie so they dont show anymore
     localStorage.removeItem("userfirstusetime");
-}
-
-function shareSubjects() { //generate QR code to share
-    $('body').append($(`
-        <div id="qr-share" title="Сподели програма">
-            <p>Отворете сайта от друго устройство и изберете картинката с QR код долу-вдясно на страницата.</p>
-        </div>`));
-    
-    /*var fd=new FormData();
-        fd.append("json",localStorage.getItem("program"));
-        fetch("./temp-jsons/create.php",{method:"POST",body:fd})
-    */
-    
-    let filename = '';
-    
-    $.ajax({
-    type: "POST",
-        url: "./temp-jsons/create.php",
-        data: {
-            program: localStorage.getItem('program')
-        },
-        dataType: 'JSON',
-        async :false,
-            success: function (response) {
-                filename = response.filename;
-            },
-            failed: function (err) {
-                console.log(err);
-            }
-    });
-    
-    
-        var dataUriPngImage = document.createElement("img"),
-            u = filename,
-            s = QRCode.generatePNG(u, {
-                ecclevel: "M"
-            });
-        dataUriPngImage.src = s;
-        $('#qr-share').append(dataUriPngImage);
-    
-    $("#qr-share").dialog({
-        draggable: false,
-        modal: true,
-        width: 300,
-        dialogClass: "qr-dialog",
-        close: function () {
-            $('#qr-share').remove();
-        }
-    });
 }
 //
 
