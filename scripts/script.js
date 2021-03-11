@@ -182,11 +182,6 @@ function getSubject(week, subjects) { //tursi koi predmet ima sega potrebitelq
 function displaySubject(sub) { //izkarva predmeta v dom
     time = `${sub.starts}-${sub.ends}`;
     if (sub.link.length > 0) {
-        if (sub.link.includes('http://'))
-            link = sub.link;
-        else
-            link = 'http://' + sub.link;
-
         linkEl.href = link;
     }
 
