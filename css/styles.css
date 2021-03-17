@@ -326,6 +326,10 @@ form button[type="submit"] {
     padding: 1px;
 }
 
+#enter-code {
+    text-align: center;
+}
+
 .continuebutton {
     text-transform: uppercase;
     letter-spacing: 0.10rem;
@@ -333,6 +337,11 @@ form button[type="submit"] {
     position: relative;
     overflow: hidden;
     z-index: 1;
+}
+
+.simplecontinuebutton {
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
 }
 
 .continuebutton:after {

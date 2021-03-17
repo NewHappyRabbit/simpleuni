@@ -36,27 +36,39 @@ $.fn.animateRotate = function (angle, duration, easing, complete) { //this is fo
 };
 
 
+function deleteAll() {
+    localStorage.removeItem("program");
+    localStorage.removeItem("type");
+    localStorage.removeItem('userfirstusetime');
+    alert('Всичко е изтрито!');
+    location.reload();
+}
 
-//TODO FUNCTIONS
+
 function activateProgramCode() {
     let code = document.getElementById("programcode").value;
-    
-    const Back4app = Parse.Object.extend("programs");
-    const back4app = new Parse.Query(Back4app);
 
-    back4app.get(code)
-    .then((program) => {
-      // The object was retrieved successfully.
-        localStorage.setItem("program", JSON.stringify(program.attributes.Program));
-        alert('Успешно въведена програма!');
-        window.location.replace("index.html");
-    }, (error) => {
-      // The object was not retrieved successfully.
-        alert('Възникна грешка: ' + error);
-    });
-    
-    
+    if (!code)
+        alert('Моля въведете код!');
+    else {
+        const Back4app = Parse.Object.extend("programs");
+        const back4app = new Parse.Query(Back4app);
+
+        back4app.get(code)
+            .then((program) => {
+                // The object was retrieved successfully.
+                localStorage.setItem("program", JSON.stringify(program.attributes.Program));
+                alert('Успешно въведена програма!');
+                window.location.replace("index.html");
+            }, (error) => {
+                // The object was not retrieved successfully.
+                //alert('Възникна грешка: ' + error);
+                alert('Невалиден код.');
+            });
+    }
+
 }
+
 function createProgramCode() {
     const Back4app = Parse.Object.extend("programs");
     const back4app = new Back4app();
@@ -73,35 +85,18 @@ function createProgramCode() {
         });
 }
 
-function showTips() {
-    //first check if its desktop or mobile to show appropriate tip (cus random sizes and etc)
-    if (ismobile) { //if user uses phone
-        $('#week-choose').append(`<object class="tips" id="tip-1-mobile" type="image/svg+xml" data="svg/tip-1-mobile.svg"></object>`);
-    } else { //user uses desktop
-        $('#week-choose').append(`<object id="tip-1" type="image/svg+xml" data="svg/tip-1.svg"></object>`);
-    }
-
-    //when all tips shown, delete the cookie so they dont show anymore
-    localStorage.removeItem("userfirstusetime");
-}
-//
-
 
 function checkUser() { //proverqva dali potrebitelq vliza za purvi put ili ve4e e vkaral predmeti
-    /*    let regex = /program=({.+})/;
-        let final = {};*/
-
-
     let subjects = localStorage.getItem("program");
-
 
     if (subjects === null) {
         createSubjects();
     } else {
         subjects = JSON.parse(subjects);
-        if (localStorage.getItem("userfirstusetime")) //pokazva na potrebitelq nqkoi hintove pri purvo polzvane
-            showTips();
-        askOddOrEven(subjects);
+        if (localStorage.getItem("type") == 'student')
+            askOddOrEven(subjects);
+        else
+            getSubject(subjects);
     }
 }
 
@@ -122,18 +117,18 @@ function askOddOrEven(subjects) { //pita dali e chetna ili nechetna sedmica
             buttons: {
                 "Четна": function () {
                     $(this).dialog("close");
-                    getSubject('четна', subjects);
+                    getSubject(subjects, 'четна');
                 },
                 "Нечетна": function () {
                     $(this).dialog("close");
-                    getSubject('нечетна', subjects);
+                    getSubject(subjects, 'нечетна');
                 }
             }
         });
     });
 }
 
-function getSubject(week, subjects) { //tursi koi predmet ima sega potrebitelq
+function getSubject(subjects, week) { //tursi koi predmet ima sega potrebitelq
     switch (date) {
         case 1:
             date = 'понеделник';
@@ -157,26 +152,50 @@ function getSubject(week, subjects) { //tursi koi predmet ima sega potrebitelq
             date = 'неделя';
             break;
     }
-    
-    if (subjects[date][week].length) {
-        for (let sub of subjects[date][week]) {
-            let endT = sub.ends.split(":");
 
-            if (endT[0] > hours) {
-                displaySubject(sub);
-                return;
-            } else if (endT[0] == hours && endT[1] >= minutes) {
-                displaySubject(sub);
-                return;
-            } else { //ako nqma poveche chasove za dnes
-                subjectEl.innerText = 'Днес нямате повече часове.';
-                $('#userDiv').show();
+    if (week) { //if student
+        if (subjects[date][week].length) {
+            for (let sub of subjects[date][week]) {
+                let endT = sub.ends.split(":");
+
+                if (endT[0] > hours) {
+                    displaySubject(sub);
+                    return;
+                } else if (endT[0] == hours && endT[1] >= minutes) {
+                    displaySubject(sub);
+                    return;
+                } else { //ako nqma poveche chasove za dnes
+                    subjectEl.innerText = 'Днес нямате повече часове.';
+                    $('#userDiv').show();
+                }
             }
+        } else { //ako vuob6te nqma 4asove dnes
+            subjectEl.innerText = 'Програмата за днес е празна.';
+            $('#userDiv').show();
         }
-    } else { //ako vuob6te nqma 4asove dnes
-        subjectEl.innerText = 'Програмата за днес е празна.';
-        $('#userDiv').show();
+    } else { //if pupil
+        if (subjects[date].length) {
+            for (let sub of subjects[date]) {
+                let endT = sub.ends.split(":");
+
+                if (endT[0] > hours) {
+                    displaySubject(sub);
+                    return;
+                } else if (endT[0] == hours && endT[1] >= minutes) {
+                    displaySubject(sub);
+                    return;
+                } else { //ako nqma poveche chasove za dnes
+                    subjectEl.innerText = 'Днес нямате повече часове.';
+                    $('#userDiv').show();
+                }
+            }
+        } else { //ako vuob6te nqma 4asove dnes
+            subjectEl.innerText = 'Програмата за днес е празна.';
+            $('#userDiv').show();
+        }
     }
+
+
 }
 
 function displaySubject(sub) { //izkarva predmeta v dom
@@ -186,7 +205,8 @@ function displaySubject(sub) { //izkarva predmeta v dom
     }
 
     subjectEl.innerText = sub.name;
-    typeEl.innerText = sub.type;
+    if (sub.type)
+        typeEl.innerText = sub.type;
     if (sub.room.length > 0)
         roomEl.innerText = sub.room;
     timeEl.innerText = time;
@@ -212,9 +232,6 @@ function editSubjects() { //from userDivs
     $("#allforms").show();
     $("#add-subject-hint").hide();
 
-    //get subjects from cookie
-    let regex = /program=({.+})/;
-    let final = {};
     let subjects = localStorage.getItem("program");
     final = JSON.parse(subjects);
 
@@ -252,21 +269,29 @@ function editSubjects() { //from userDivs
                 break;
         }
 
-        //tuk obrabotvame vsi4ki 4etni i tezi koito sa VSQKA sedmica
-        if (final[den].четна.length) { //ako ima chasove v tozi den
-            for (let subject of final[den].четна) {
+        if (localStorage.getItem("type") == 'student') {
+            //tuk obrabotvame vsi4ki 4etni i tezi koito sa VSQKA sedmica
+            if (final[den].четна.length) { //ako ima chasove v tozi den
+                for (let subject of final[den].четна) {
+                    fillSubjectsForEdit(day, subject);
+                }
+            }
+
+            //tuk preska4ame predmetite koito sa vsqka sedmica za da ne stavat dvoini formi
+            if (final[den].нечетна.length) { //ako ima chasove v tozi den
+                for (let subject of final[den].нечетна) {
+                    if (subject.when != 'всяка') {
+                        fillSubjectsForEdit(day, subject);
+                    }
+                }
+            }
+        } else {
+            for (let subject of final[den]) {
                 fillSubjectsForEdit(day, subject);
             }
         }
 
-        //tuk preska4ame predmetite koito sa vsqka sedmica za da ne stavat dvoini formi
-        if (final[den].нечетна.length) { //ako ima chasove v tozi den
-            for (let subject of final[den].нечетна) {
-                if (subject.when != 'всяка') {
-                    fillSubjectsForEdit(day, subject);
-                }
-            }
-        }
+
     }
 }
 
@@ -291,8 +316,9 @@ function fillSubjectsForEdit(day, subject) {
         `);
     $(form).append(el);
 
-    if (subject.type == 'лекция') {
-        el = $(`
+    if (subject.type) {
+        if (subject.type == 'лекция') {
+            el = $(`
         <label class="cool-input-select cool-input-select-type" for="${den}-predmet${n}-type">
             <select id="${den}-predmet${n}-type" name="type" required>
                 <option value="упражнение" >Упражнение</option>
@@ -302,8 +328,8 @@ function fillSubjectsForEdit(day, subject) {
             <use xlink:href="#select-arrow-down"></use>
           </svg>
         </label>`);
-    } else {
-        el = $(`
+        } else {
+            el = $(`
         <label class="cool-input-select cool-input-select-type" for="${den}-predmet${n}-type">
             <select id="${den}-predmet${n}-type" name="type" required>
                 <option value="упражнение" selected="selected">Упражнение</option>
@@ -313,11 +339,11 @@ function fillSubjectsForEdit(day, subject) {
             <use xlink:href="#select-arrow-down"></use>
           </svg>
         </label>`);
-    }
-    $(form).append(el);
+        }
+        $(form).append(el);
 
-    if (subject.when == 'четна') {
-        el = $(`
+        if (subject.when == 'четна') {
+            el = $(`
         <label class="cool-input-select cool-input-select-week" for="${den}-predmet${n}-when">
             <select id="${den}-predmet${n}-when" required>
                 <option value="нечетна">В нечетна седмица</option>
@@ -328,8 +354,8 @@ function fillSubjectsForEdit(day, subject) {
             <use xlink:href="#select-arrow-down"></use>
           </svg>
         </label>`);
-    } else if (subject.when == 'нечетна') {
-        el = $(`
+        } else if (subject.when == 'нечетна') {
+            el = $(`
         <label class="cool-input-select cool-input-select-week" for="${den}-predmet${n}-when">
             <select id="${den}-predmet${n}-when" required>
                 <option value="нечетна" selected="selected">В нечетна седмица</option>
@@ -340,8 +366,8 @@ function fillSubjectsForEdit(day, subject) {
             <use xlink:href="#select-arrow-down"></use>
           </svg>
         </label>`);
-    } else {
-        el = $(`
+        } else {
+            el = $(`
         <label class="cool-input-select cool-input-select-week" for="${den}-predmet${n}-when">
             <select id="${den}-predmet${n}-when" required>
                 <option value="нечетна">В нечетна седмица</option>
@@ -352,8 +378,9 @@ function fillSubjectsForEdit(day, subject) {
             <use xlink:href="#select-arrow-down"></use>
           </svg>
         </label>`);
+        }
+        $(form).append(el);
     }
-    $(form).append(el);
 
     let label = $(`<label class="cool-input-time-starts cool-input" for="${den}-predmet${n}-starts"></label>`);
     el = $(`<input value="${subject.starts}" placeholder="&nbsp;" onchange="checkTime(this); verifyTimeForm(this)" id="${den}-predmet${n}-starts" type="text" required>`);
@@ -426,27 +453,83 @@ function createSubjects() { //pri purvo polzvane kara potrebitelq da vkara predm
 
     $("#dialog-message").dialog({
         modal: false,
+        resizable: false,
         draggable: false,
         closeOnEscape: false,
-        width: '250',
+        width: '300',
         classes: {
             'ui-dialog-titlebar-close': 'ui-dialog-close-hide'
         },
         buttons: [
             {
+                text: 'Въведи код',
+                "class": 'simplecontinuebutton',
+                click: function () {
+                    //$(this).dialog("close");
+
+                    $("#enter-code").dialog({
+                        modal: true,
+                        draggable: false,
+                        closeOnEscape: false,
+                        width: '300',
+                        buttons: [
+                            {
+                                text: 'Въведи',
+                                "class": 'simplecontinuebutton',
+                                click: function () {
+                                    activateProgramCode();
+                                }
+                        }]
+                    });
+
+
+
+                    localStorage.setItem("userfirstusetime", "true"); //polzvame za da dadem hintove pri purvo polzvane
+                }
+            },
+            {
                 text: 'Продължи',
                 "class": 'continuebutton',
                 click: function () {
-                    $('#qr-svg-link').hide();
-                    $('#qr-svg-object').hide();
                     $(this).dialog("close");
-                    $("#tabs").tabs();
-                    $("#allforms").show();
-                    localStorage.setItem("userfirstusetime", "true"); //polzvame za da dadem hintove pri purvo polzvane
+                    $("#student-or-pupil").dialog({
+                        modal: false,
+                        resizable: false,
+                        draggable: false,
+                        closeOnEscape: false,
+                        width: '250',
+                        classes: {
+                            'ui-dialog-titlebar-close': 'ui-dialog-close-hide'
+                        },
+                        buttons: [
+                            {
+                                text: 'Студент',
+                                click: function () {
+                                    $(this).dialog("close");
+                                    $("#tabs").tabs();
+                                    $("#allforms").show();
+                                    localStorage.setItem("userfirstusetime", "true"); //polzvame za da dadem hintove pri purvo polzvane
+                                    localStorage.setItem("type", "student");
+                                }
+                            },
+                            {
+                                text: 'Ученик',
+                                click: function () {
+                                    $(this).dialog("close");
+                                    $("#tabs").tabs();
+                                    $("#allforms").show();
+                                    localStorage.setItem("userfirstusetime", "true"); //polzvame za da dadem hintove pri purvo polzvane
+                                    localStorage.setItem("type", "pupil");
+                                }
+                            }
+                        ]
+                    });
                 }
-        }
+            }
         ]
     });
+
+
     for (let day of ['#ponedelnik', '#vtornik', '#srqda', '#chetvurtuk', '#petuk', '#subota', '#nedelq']) {
         $(day).accordion({
             collapsible: true,
@@ -534,11 +617,111 @@ function validateForms() {
             }
 
         }
-        finalize();
+        if (localStorage.getItem("type") == 'student')
+            finalizeStudent();
+        else
+            finalizepupil();
     }
 }
 
-function finalize() {
+function finalizepupil() {
+    $("#allforms").hide();
+    let allsubj = {
+        'понеделник': [],
+        'вторник': [],
+        'сряда': [],
+        'четвъртък': [],
+        'петък': [],
+        'събота': [],
+        'неделя': []
+    };
+
+    for (let day of ['#ponedelnik', '#vtornik', '#srqda', '#chetvurtuk', '#petuk', '#subota', '#nedelq']) {
+        $('#finalize-' + day.substring(1)).empty();
+        if ($(`${day} div`).length > 0) {
+            for (let subject of ($(`${day} div form`))) {
+                let subj = {};
+                for (let input of $(subject).find(':input').not(':input[type=button], :input[type=submit]')) {
+                    let id = $(input).attr('id').split('-')[2];
+                    let val = $(input).val();
+                    subj[id] = val;
+                }
+                let el;
+                if (subj.room) {
+                    el = $("<li></li>").text(`${subj.name} от ${subj.starts} до ${subj.ends} в стая ${subj.room}.`);
+                } else {
+                    el = $("<li></li>").text(`${subj.name} от ${subj.starts} до ${subj.ends}.`);
+                }
+
+                $('#finalize-' + day.substring(1)).append(el);
+
+
+                let d;
+                switch (day) {
+                    case '#ponedelnik':
+                        d = 'понеделник';
+                        break;
+                    case '#vtornik':
+                        d = 'вторник';
+                        break;
+                    case '#srqda':
+                        d = 'сряда';
+                        break;
+                    case '#chetvurtuk':
+                        d = 'четвъртък';
+                        break;
+                    case '#petuk':
+                        d = 'петък';
+                        break;
+                    case '#subota':
+                        d = 'събота';
+                        break;
+                    case '#nedelq':
+                        d = 'неделя';
+                        break;
+                }
+
+                allsubj[d].push(subj);
+
+            }
+        }
+    }
+
+    $("#finalize").dialog({
+        resizable: false,
+        height: "auto",
+        width: "auto",
+        modal: false,
+        draggable: false,
+        classes: {
+            'ui-dialog-titlebar-close': 'ui-dialog-close-hide'
+        },
+        closeOnEscape: false,
+        buttons: [
+            {
+                text: 'Назад',
+                "class": 'backbutton finalize-buttons',
+                click: function () {
+                    $(this).dialog("close");
+                    $("#allforms").show();
+                }
+            },
+            {
+                text: 'Завърши',
+                "class": 'finishbutton finalize-buttons',
+                click: function () {
+                    $(this).dialog("close");
+                    localStorage.setItem("program", `${JSON.stringify(allsubj)}`);
+                    checkUser();
+                }
+            }
+        ]
+    });
+    $("#finalize").show();
+
+}
+
+function finalizeStudent() {
     $("#allforms").hide();
     let allsubj = {
         'понеделник': {
@@ -685,32 +868,36 @@ function addSubject(day) {
     `);
     $(form).append(el);
 
-    el = $(`
-    <label class="cool-input-select cool-input-select-type" for="${den}-predmet${n}-type">
-        <select id="${den}-predmet${n}-type" name="type" required>
-            <option value="" disabled="disabled" selected="selected">Избери тип*</option>
-            <option value="упражнение" >Упражнение</option>
-            <option value="лекция">Лекция</option>
-        </select>
-      <svg>
-        <use xlink:href="#select-arrow-down"></use>
-      </svg>
-    </label>`);
-    $(form).append(el);
+    if (localStorage.getItem("type") == 'student') {
+        el = $(`
+        <label class="cool-input-select cool-input-select-type" for="${den}-predmet${n}-type">
+            <select id="${den}-predmet${n}-type" name="type" required>
+                <option value="" disabled="disabled" selected="selected">Избери тип*</option>
+                <option value="упражнение" >Упражнение</option>
+                <option value="лекция">Лекция</option>
+            </select>
+          <svg>
+            <use xlink:href="#select-arrow-down"></use>
+          </svg>
+        </label>`);
+        $(form).append(el);
 
-    el = $(`
-    <label class="cool-input-select cool-input-select-week" for="${den}-predmet${n}-when">
-        <select id="${den}-predmet${n}-when" required>
-            <option value="" disabled="disabled" selected="selected">Избери кога*</option>
-            <option value="нечетна">В нечетна седмица</option>
-            <option value="четна">В четна седмица</option>
-            <option value="всяка">Всяка седмица</option>
-        </select>
-      <svg>
-        <use xlink:href="#select-arrow-down"></use>
-      </svg>
-    </label>`);
-    $(form).append(el);
+
+        el = $(`
+        <label class="cool-input-select cool-input-select-week" for="${den}-predmet${n}-when">
+            <select id="${den}-predmet${n}-when" required>
+                <option value="" disabled="disabled" selected="selected">Избери кога*</option>
+                <option value="нечетна">В нечетна седмица</option>
+                <option value="четна">В четна седмица</option>
+                <option value="всяка">Всяка седмица</option>
+            </select>
+          <svg>
+            <use xlink:href="#select-arrow-down"></use>
+          </svg>
+        </label>`);
+        $(form).append(el);
+    }
+
 
     let label = $(`<label class="cool-input-time-starts cool-input" for="${den}-predmet${n}-starts"></label>`);
     el = $(`<input placeholder="&nbsp;" onchange="checkTime(this); verifyTimeForm(this)" id="${den}-predmet${n}-starts" type="text" required>`);
