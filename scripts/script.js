@@ -1,11 +1,11 @@
 let date = new Date().getDay();
 let hours = new Date().getHours();
 let minutes = new Date().getMinutes();
+let linkEl = document.getElementById("link");
 let subjectEl = document.getElementById("subject");
 let typeEl = document.getElementById("type");
 let roomEl = document.getElementById("room");
 let timeEl = document.getElementById("time");
-let linkEl = document.getElementById("link");
 
 
 window.mobileCheck = function () {
@@ -37,9 +37,7 @@ $.fn.animateRotate = function (angle, duration, easing, complete) { //this is fo
 
 
 function deleteAll() {
-    localStorage.removeItem("program");
-    localStorage.removeItem("type");
-    localStorage.removeItem('userfirstusetime');
+    localStorage.clear();
     alert('Всичко е изтрито!');
     location.reload();
 }
@@ -62,7 +60,7 @@ function activateProgramCode() {
                 localStorage.setItem("userfirsttime", true);
                 alert('Успешно въведена програма!');
                 window.location.replace("index.html");
-            
+
             }, (error) => {
                 // The object was not retrieved successfully.
                 //alert('Възникна грешка: ' + error);
@@ -94,8 +92,13 @@ function createProgramCode() {
 
 
 function checkUser() { //proverqva dali potrebitelq vliza za purvi put ili ve4e e vkaral predmeti
-    let subjects = localStorage.getItem("program");
 
+    //check dark mode settings
+    darkMode();
+
+    let subjects = localStorage.getItem("program");
+        document.getElementById('link').remove();
+        document.getElementById('userDiv').appendChild(linkEl);
     if (subjects === null) {
         createSubjects();
     } else {
@@ -107,6 +110,59 @@ function checkUser() { //proverqva dali potrebitelq vliza za purvi put ili ve4e 
     }
 }
 
+function changeDarkMode() {
+    let preference = localStorage.getItem("dark-mode");
+    switch (preference) {
+        case 'off':
+            localStorage.setItem("dark-mode", "on");
+            darkMode();
+            break;
+        case 'on':
+            localStorage.setItem("dark-mode", "auto");
+            darkMode();
+            break;
+        case 'auto':
+            localStorage.setItem("dark-mode", "off");
+            darkMode();
+            break;
+        default:
+            localStorage.setItem("dark-mode", "on");
+            darkMode();
+            break;
+    }
+}
+
+function darkMode() {
+    let darkthemecss = document.getElementById('darktheme');
+
+    let preference = localStorage.getItem("dark-mode");
+    let button = document.getElementById('change-dark-mode');
+    
+    if ( preference == 'auto') {
+        button.innerText = 'Тъмен режим: Автоматичен';
+        let checkSystem = window.matchMedia("(prefers-color-scheme: dark)");
+
+        if (checkSystem.matches) {
+            document.body.classList.add("dark-mode");
+            darkthemecss.disabled = '';
+        } else {
+            document.body.classList.remove("dark-mode");
+            darkthemecss.disabled = 'disabled';
+        }
+    } else if (preference == 'on') {
+        button.innerText = 'Тъмен режим: Включен';
+        document.body.classList.add("dark-mode");
+        darkthemecss.disabled = '';
+    }
+        
+    else if (preference == null || preference == 'off') {
+        button.innerText = 'Тъмен режим: Изключен';
+        document.body.classList.remove("dark-mode");
+        darkthemecss.disabled = 'disabled';
+    }
+        
+}
+
 //////////// OLD USER FUNCTIONS ////////////////
 function askOddOrEven(subjects) { //pita dali e chetna ili nechetna sedmica    
     $(function () {
@@ -114,13 +170,13 @@ function askOddOrEven(subjects) { //pita dali e chetna ili nechetna sedmica
             resizable: false,
             height: "auto",
             width: 'auto',
+            modal: false,
+            draggable: false,
+            closeOnEscape: false,
             classes: {
                 'ui-dialog-title': 'ui-dialog-title-custom',
                 'ui-dialog-titlebar-close': 'ui-dialog-close-hide'
             },
-            modal: true,
-            draggable: false,
-            closeOnEscape: false,
             buttons: {
                 "Четна": function () {
                     $(this).dialog("close");
@@ -819,7 +875,7 @@ function finalizeStudent() {
         resizable: false,
         height: "auto",
         width: "auto",
-        modal: true,
+        modal: false,
         draggable: false,
         classes: {
             'ui-dialog-titlebar-close': 'ui-dialog-close-hide'

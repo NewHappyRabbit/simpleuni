@@ -1,3 +1,56 @@
+* {
+    font-family: 'Roboto', sans-serif;
+}
+/*DARK MODE OPTIONS*/
+body.dark-mode {
+    background-color: #262626;
+}
+
+body.dark-mode #link,
+body.dark-mode .cool-input-select select option,
+body.dark-mode .cool-input *,
+body.dark-mode .cool-input-select select{
+    color: white !important;
+}
+
+body.dark-mode #settingsbutton {
+    fill: white;
+}
+
+body.dark-mode .cool-input-select select {
+    border: none;
+}
+
+body.dark-mode .cool-input,
+body.dark-mode .cool-input-select select,
+body.dark-mode .form-submit-check {
+    background: #333 url("images/ui-bg_dots-small_20_333333_2x2.png") 50% 50% repeat !important;
+}
+
+body.dark-mode .cool-input input:hover {
+    background: #333;
+}
+
+body.dark-mode .form-submit-check::after {
+    background-image: url("../img/check-dotted.png");
+}
+
+body.dark-mode .predmet {
+    background: #111;
+    border-color: #096ac8;
+}
+
+body.dark-mode  #ponedelnik h3, 
+body.dark-mode #ponedelnik h3 ~ h3,
+body.dark-mode .cool-input-select select,
+body.dark-mode .cool-input-label
+{
+    color: #75abff !important;
+}
+
+
+/*NORMAL OPTIONS*/
+
 form {
     display: grid;
     grid-row-gap: 15px;
@@ -476,7 +529,6 @@ form button[type="submit"] {
     height: 40px;
     top: 10px;
     left: 10px;
-    fill: white;
     cursor: pointer;
     opacity: 0.8;
 }
@@ -486,7 +538,7 @@ form button[type="submit"] {
 }
 
 body {
-    background-color: #262626;
+    background-color: #f0f0f0;
     padding: 0px;
     margin: 0px;
 }
@@ -497,6 +549,7 @@ body {
 }
 
 #link {
+    color: #333;
     position: absolute;
     left: 25vw;
     top: 25vh;
@@ -504,7 +557,6 @@ body {
     width: 50vw;
     padding: 100px 0px 100px 0px;
     text-decoration: none;
-    color: white;
 }
 
 #link span {
@@ -529,7 +581,6 @@ body {
 
 #settings {
     display: inline-block;
-    background-color: white;
     margin-top: 70px;
     padding: 5px 10px;
 }

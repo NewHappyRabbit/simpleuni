@@ -5,17 +5,22 @@
     <meta charset="utf-8">
     <title>MyDigitalSchedule</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500&display=swap" rel="stylesheet">
+    
+    <link id="lighttheme" rel="stylesheet" href="./css/jquery-ui.css">
+    <link id="darktheme" rel="stylesheet" href="./css/jquery-ui-darktheme.min.css" disabled="disabled">
+    <link rel="stylesheet" href="./css/styles.css">
+    
+    <script src="./scripts/jquery-3.5.1.min.js"></script>
+    <script src="./scripts/jquery-ui.min.js"></script>
 
     <script src="./scripts/jquery.timepicker.min.js"></script>
     <link rel="stylesheet" href="./css/jquery.timepicker.min.css">
 
-    <link rel="stylesheet" href="./css/styles.css">
-    
-    <script type="text/javascript" src="https://npmcdn.com/parse/dist/parse.min.js"></script>
-    <script type="text/javascript" type="text/javascript">
+    <script src="./scripts/parse.min.js"></script>
+    <script>
         Parse.initialize("OhHXlNOYVhnRv5WwWGCijNSuFqS3u77NRiioEIGS","m2g7YwRQe7W2VUdsBtn3MAJxomzUf6azp9FibaWQ"); //PASTE HERE YOUR Back4App APPLICATION ID AND YOUR JavaScript KEY
         Parse.serverURL = 'https://parseapi.back4app.com/'
     </script>
@@ -142,7 +147,8 @@
         <div id="settings" style="display: none;">
             <button onclick="editSubjects()">Промени програма</button>
             <button onclick="createProgramCode()">Сподели програма</button>
-            <button onclick="deleteAll()">Изтрии програма</button>
+            <button onclick="deleteAll()">Изтрий програма</button>
+            <button id="change-dark-mode" onclick="changeDarkMode()"></button>
         </div>
         <a id="link">
             <span id="subject"></span>
