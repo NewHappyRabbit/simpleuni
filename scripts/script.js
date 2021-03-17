@@ -7,7 +7,6 @@ let typeEl = document.getElementById("type");
 let roomEl = document.getElementById("room");
 let timeEl = document.getElementById("time");
 
-
 window.mobileCheck = function () {
     let check = false;
     (function (a) {
@@ -95,10 +94,10 @@ function checkUser() { //proverqva dali potrebitelq vliza za purvi put ili ve4e 
 
     //check dark mode settings
     darkMode();
-
+    clearFields();
+    
     let subjects = localStorage.getItem("program");
-        document.getElementById('link').remove();
-        document.getElementById('userDiv').appendChild(linkEl);
+        
     if (subjects === null) {
         createSubjects();
     } else {
@@ -191,7 +190,19 @@ function askOddOrEven(subjects) { //pita dali e chetna ili nechetna sedmica
     });
 }
 
+function clearFields() {
+    linkEl.removeAttribute("href");
+    subjectEl.innerText = '';
+    typeEl.innerText = '';
+    roomEl.innerText = '';
+    timeEl.innerText = '';
+}
+
 function getSubject(subjects, week) { //tursi koi predmet ima sega potrebitelq
+    
+    document.getElementById('link').remove();
+        document.getElementById('userDiv').appendChild(linkEl);
+    
     switch (date) {
         case 1:
             date = 'понеделник';
@@ -233,7 +244,7 @@ function getSubject(subjects, week) { //tursi koi predmet ima sega potrebitelq
                 }
             }
         } else { //ako vuob6te nqma 4asove dnes
-            subjectEl.innerText = 'Програмата за днес е празна.';
+            subjectEl.innerText = 'Програмата ви за днес е празна.';
             $('#userDiv').show();
         }
     } else { //if pupil

@@ -737,10 +737,17 @@ body {
         padding: 4px 6px !important;
     }
     
+    #link {
+        width: 100%;
+        left: 0;
+    }
+    
     #allforms li.ui-tabs-tab:nth-of-type(6), #allforms li.ui-tabs-tab:nth-of-type(7) {
         margin-top: 5px;
         margin-bottom: 4px;
     }
+    
+    
     
 /*
     .finalize-buttons {
