@@ -57,9 +57,12 @@ function activateProgramCode() {
         back4app.get(code)
             .then((program) => {
                 // The object was retrieved successfully.
-                localStorage.setItem("program", JSON.stringify(program.attributes.Program));
+                localStorage.setItem("program", program.attributes.Program.program);
+                localStorage.setItem("type", program.attributes.Program.type);
+                localStorage.setItem("userfirsttime", true);
                 alert('Успешно въведена програма!');
                 window.location.replace("index.html");
+            
             }, (error) => {
                 // The object was not retrieved successfully.
                 //alert('Възникна грешка: ' + error);
@@ -71,9 +74,13 @@ function activateProgramCode() {
 
 function createProgramCode() {
     const Back4app = Parse.Object.extend("programs");
+    let program = {
+        program: localStorage.getItem("program"),
+        type: localStorage.getItem("type")
+    };
     const back4app = new Back4app();
 
-    let program = JSON.parse(localStorage.getItem("program"));
+    //let program = JSON.parse(localStorage.getItem("program"));
     back4app.set("Program", program);
     back4app.save()
         .then((object) => {
