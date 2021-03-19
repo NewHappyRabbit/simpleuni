@@ -1,0 +1,23 @@
+{
+  "name": "simpleuni",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NewHappyRabbit/mydigitalschedule.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NewHappyRabbit/mydigitalschedule/issues"
+  },
+  "homepage": "https://github.com/NewHappyRabbit/mydigitalschedule#readme",
+  "dependencies": {
+    "lit-html": "^1.3.0"
+  }
+}

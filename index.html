@@ -24,9 +24,10 @@
         Parse.initialize("OhHXlNOYVhnRv5WwWGCijNSuFqS3u77NRiioEIGS","m2g7YwRQe7W2VUdsBtn3MAJxomzUf6azp9FibaWQ"); //PASTE HERE YOUR Back4App APPLICATION ID AND YOUR JavaScript KEY
         Parse.serverURL = 'https://parseapi.back4app.com/'
     </script>
+    <script type="module" src="./scripts/script.js"></script>
 </head>
 
-<body onload="checkUser()">
+<body>
     <div id="subjectsForms" style="display: none">  
         <div style="display: none" id="dialog-message" title="Добре дошъл!">
             <p>
@@ -56,53 +57,53 @@
                     <div id="ponedelnik" subjs='0' deleted='false'>
                     </div>
                     <div class="add-new-subject-button">
-                        <img title="Добави предмет" src="svg/plus.svg" onclick="addSubject(this.parentNode.previousElementSibling.id)">
+                        <img title="Добави предмет" src="svg/plus.svg">
                     </div>
                 </div>
                 <div id="tabs-2">
                     <div id="vtornik" subjs='0' deleted='false'>
                     </div>
                     <div class="add-new-subject-button">
-                        <img title="Добави предмет" src="svg/plus.svg" onclick="addSubject(this.parentNode.previousElementSibling.id)">
+                        <img title="Добави предмет" src="svg/plus.svg">
                     </div>
                 </div>
                 <div id="tabs-3">
                     <div id="srqda" subjs='0' deleted='false'>
                     </div>
                     <div class="add-new-subject-button">
-                        <img title="Добави предмет" src="svg/plus.svg" onclick="addSubject(this.parentNode.previousElementSibling.id)">
+                        <img title="Добави предмет" src="svg/plus.svg">
                     </div>
                 </div>
                 <div id="tabs-4">
                     <div id="chetvurtuk" subjs='0' deleted='false'>
                     </div>
                     <div class="add-new-subject-button">
-                        <img title="Добави предмет" src="svg/plus.svg" onclick="addSubject(this.parentNode.previousElementSibling.id)">
+                        <img title="Добави предмет" src="svg/plus.svg">
                     </div>
                 </div>
                 <div id="tabs-5">
                     <div id="petuk" subjs='0' deleted='false'>
                     </div>
                     <div class="add-new-subject-button">
-                        <img title="Добави предмет" src="svg/plus.svg" onclick="addSubject(this.parentNode.previousElementSibling.id)">
+                        <img title="Добави предмет" src="svg/plus.svg">
                     </div>
                 </div>
                 <div id="tabs-6">
                     <div id="subota" subjs='0' deleted='false'>
                     </div>
                     <div class="add-new-subject-button">
-                        <img title="Добави предмет" src="svg/plus.svg" onclick="addSubject(this.parentNode.previousElementSibling.id)">
+                        <img title="Добави предмет" src="svg/plus.svg">
                     </div>
                 </div>
                 <div id="tabs-7">
                     <div id="nedelq" subjs='0' deleted='false'>
                     </div>
                     <div class="add-new-subject-button">
-                        <img title="Добави предмет" src="svg/plus.svg" onclick="addSubject(this.parentNode.previousElementSibling.id)">
+                        <img title="Добави предмет" src="svg/plus.svg">
                     </div>
                 </div>
                 <div style="text-align: right">
-                    <button onclick="validateForms()" class="continuebutton ui-button ui-widget ui-corner-all">Продължи</button>
+                    <button id="finalize-form-button" class="continuebutton ui-button ui-widget ui-corner-all">Продължи</button>
                 </div>
             </div>
         </div>
@@ -139,23 +140,29 @@
     </div>
 
     <div id="userDiv" style="display: none;">
-        <div id="week-choose" title="Изберете седмица">
-        </div>
-        <svg onclick="openSettings()" id="settingsbutton">
+        <div id="week-choose" title="Изберете седмица"></div>
+
+        <svg id="settingsbutton">
             <use xlink:href="#settings-wheel"></use>
         </svg>
+
         <div id="settings" style="display: none;">
-            <button onclick="editSubjects()">Промени програма</button>
-            <button onclick="createProgramCode()">Сподели програма</button>
-            <button onclick="deleteAll()">Изтрий програма</button>
-            <button id="change-dark-mode" onclick="changeDarkMode()"></button>
+            <button id="edit-program" class="ui-button ui-corner-all ui-widget">Промени програма</button>
+            <button id="share-program" class="ui-button ui-corner-all ui-widget">Сподели програма</button>
+            <button id="delete-program" class="ui-button ui-corner-all ui-widget">Изтрий програма</button>
+            <button id="change-dark-mode" class="ui-button ui-corner-all ui-widget"></button>
         </div>
+
         <a id="link">
             <span id="subject"></span>
             <span id="type"></span>
             <span id="room"></span>
             <span id="time"></span>
         </a>
+        <button id="show-all-subjects" class="ui-button ui-corner-all ui-widget">Виж седмична програма</button>
+
+        <div id="allSubjects" title="Седмична програма">
+        </div>
     </div>
 
     <svg id="svg-sprites">
@@ -167,7 +174,7 @@
             <path d="m256 367.4c-61.427 0-111.4-49.974-111.4-111.4s49.973-111.4 111.4-111.4 111.4 49.974 111.4 111.4-49.973 111.4-111.4 111.4zm0-192.8c-44.885 0-81.4 36.516-81.4 81.4s36.516 81.4 81.4 81.4 81.4-36.516 81.4-81.4-36.515-81.4-81.4-81.4z" />
         </symbol>
     </svg>
-    <script src="./scripts/script.js"></script>
+    
 </body>
 
 </html>

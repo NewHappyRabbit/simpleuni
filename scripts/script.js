@@ -1,4 +1,30 @@
+import {html, render} from '/node_modules/lit-html/lit-html.js';
+window.onload=addEventListeners;
+
 let date = new Date().getDay();
+switch (date) {
+    case 1:
+        date = 'понеделник';
+        break;
+    case 2:
+        date = 'вторник';
+        break;
+    case 3:
+        date = 'сряда';
+        break;
+    case 4:
+        date = 'четвъртък';
+        break;
+    case 5:
+        date = 'петък';
+        break;
+    case 6:
+        date = 'събота';
+        break;
+    case 0:
+        date = 'неделя';
+        break;
+}
 let hours = new Date().getHours();
 let minutes = new Date().getMinutes();
 let linkEl = document.getElementById("link");
@@ -6,41 +32,260 @@ let subjectEl = document.getElementById("subject");
 let typeEl = document.getElementById("type");
 let roomEl = document.getElementById("room");
 let timeEl = document.getElementById("time");
+let currentweek;
 
-window.mobileCheck = function () {
-    let check = false;
-    (function (a) {
-        if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) check = true;
-    })(navigator.userAgent || navigator.vendor || window.opera);
-    return check;
-};
-let ismobile = mobileCheck();
-
-$.fn.animateRotate = function (angle, duration, easing, complete) { //this is for rotating setting button
-    var args = $.speed(duration, easing, complete);
-    var step = args.step;
-    return this.each(function (i, e) {
-        args.complete = $.proxy(args.complete, e);
-        args.step = function (now) {
-            $.style(e, 'transform', 'rotate(' + now + 'deg)');
-            if (step) return step.apply(e, arguments);
-        };
-
-        $({
-            deg: 0
-        }).animate({
-            deg: angle
-        }, args);
+function addEventListeners() {
+    document.getElementById('settingsbutton').addEventListener('click',openSettings);
+    document.getElementById('show-all-subjects').addEventListener('click',showAllSubjects);
+    document.getElementById('edit-program').addEventListener('click',editSubjects);
+    document.getElementById('share-program').addEventListener('click',createProgramCode);
+    document.getElementById('delete-program').addEventListener('click',deleteAll);
+    document.getElementById('change-dark-mode').addEventListener('click',changeDarkMode);
+    document.getElementById('finalize-form-button').addEventListener('click',validateForms);
+    document.querySelectorAll('#tabs img[title="Добави предмет"]').forEach((img) => {
+        img.addEventListener('click',() => {
+            addSubject(img.parentNode.previousElementSibling.id);
+        });
     });
-};
+    checkUser();
+}
 
+function showAllSubjects() {
+    let program = JSON.parse(localStorage.getItem('program'));
+    let table;
+    let days = [];
+    if (localStorage.getItem('type') == 'pupil') {
+        let getDays = () => {
+            let result = [];
+            for (let [day, val] of Object.entries(program)) {
+                result.push(html`<th>${day}</th>`);
+                days.push(day);
+            }
+            return result;
+        }
+
+        let getSubjects = () => {
+            let allsubjects = [];
+
+            let maxrows = 0;
+            for (let day of days) {
+                if (maxrows < program[day].length) {
+                    maxrows = program[day].length;
+                }
+            }
+
+            let allrows = [];
+            for (let i = 0; i < maxrows; i++) {
+                let isubjects = [];
+                for (let day of days) {
+                    program[day] = program[day].sort((a,b) => {
+                        if (a.starts > b.starts)
+                            return 1;
+                        else
+                            return -1;
+                    });
+                    if (program[day][i])
+                        isubjects.push(html`
+                            <td>
+                                ${program[day][i].link 
+                                    ? html`
+                                        <a href=${program[day][i].link}>
+                                            ${program[day][i].name}
+                                            <br>
+                                            ${program[day][i].starts}-${program[day][i].ends}
+                                            ${program[day][i].room ? 
+                                                html`<br>${program[day][i].room}`
+                                                : ''}
+                                        </a>`
+                                    : html`
+                                        ${program[day][i].name}
+                                        <br>
+                                        ${program[day][i].starts}-${program[day][i].ends}
+                                        ${program[day][i].room ? 
+                                            html`<br>${program[day][i].room}`
+                                        : ''}`
+                                }
+                            </td>
+                            `);
+
+                    else
+                        isubjects.push(html`<td></td>`);
+                }
+                allrows.push(html`
+                    <tr>
+                        ${isubjects}
+                    </tr>`);
+            }
+            return allrows;
+            }
+            table = html`
+                <table class='pupil-allsubjects'>
+                    <thead>
+                    <tr>
+                        ${getDays() /* grabs all days */}
+                    </tr>
+                    </thead>
+                    <tbody>
+                        ${getSubjects()}
+                    </tbody>
+                </table>
+            `;
+    }
+    else {
+        let getSubjects = () => {
+            let alldays = [];
+            let maxcols=0;
+            for (let day of Object.entries(program)) {
+                if(day[1].нечетна && maxcols < day[1].нечетна.length)
+                    maxcols = day[1].нечетна.length;
+                if(day[1].четна && maxcols < day[1].четна.length)
+                maxcols = day[1].четна.length;
+            }
+            let n = 0;
+            for (let day of Object.entries(program)) {
+                n++;
+                let todaysubjectschetna = [];
+                let todaysubjectsnechetna = [];
+
+                if (day[1].нечетна) {
+                    program[day[0]].нечетна = program[day[0]].нечетна.sort((a,b) => {
+                        if (a.starts > b.starts)
+                            return 1;
+                        else
+                            return -1;
+                    });
+                    for (let i = 0; i < maxcols; i++){
+                        if (day[1].нечетна && day[1].нечетна[i]){
+                            let subject = day[1].нечетна[i];
+                            todaysubjectsnechetna.push(html`
+                                <td class=${subject.when == 'всяка' ? 'every-week' : ''} rowspan=${subject.when == 'всяка' ? 2 : 1}>
+                                    ${subject.link
+                                        ? html`
+                                        <a href=${subject.link}>
+                                            ${subject.name}<br>
+                                            ${subject.type}<br>
+                                            ${subject.room ? 
+                                                html`${subject.room}<br>`
+                                                : ''
+                                            }
+                                            ${subject.starts+'-'+subject.ends}
+                                        </a>`
+                                        : html`
+                                            ${subject.name}<br>
+                                            ${subject.type}<br>
+                                            ${subject.room ? 
+                                                html`${subject.room}<br>`
+                                                : ''
+                                            }
+                                            ${subject.starts+'-'+subject.ends}`
+                                    }
+                                </td>
+                            `);}
+                        else {
+                            todaysubjectsnechetna.push(html`<td></td>`);
+                        }
+                    }
+                } else {
+                    for (let i = 0; i < maxcols; i++)
+                        todaysubjectsnechetna.push(html`<td></td>`);
+                }
+
+                if (day[1].четна) {
+                    program[day[0]].четна = program[day[0]].четна.sort((a,b) => {
+                        if (a.starts > b.starts)
+                            return 1;
+                        else
+                            return -1;
+                    });
+                    for (let i = 0; i < maxcols; i++){
+                        if (day[1].четна && day[1].четна[i]){
+                            let subject = day[1].четна[i];
+                            if(subject.when != 'всяка')
+                                todaysubjectschetna.push(html`
+                                    <td>
+                                        ${subject.link
+                                            ? html`
+                                            <a href=${subject.link}>
+                                                ${subject.name}<br>
+                                                ${subject.type}<br>
+                                                ${subject.room ? 
+                                                    html`${subject.room}<br>`
+                                                    : ''
+                                                }
+                                                ${subject.starts+'-'+subject.ends}
+                                            </a>`
+                                            : html`
+                                                ${subject.name}<br>
+                                                ${subject.type}<br>
+                                                ${subject.room ? 
+                                                    html`${subject.room}<br>`
+                                                    : ''
+                                                }
+                                                ${subject.starts+'-'+subject.ends}`
+                                        }
+                                    </td>
+                                `);
+                        }
+                        else {
+                            todaysubjectschetna.push(html`<td></td>`);
+                        }
+                    }
+                } else {
+                    for (let i = 0; i < maxcols; i++)
+                        todaysubjectschetna.push(html`<td></td>`);
+                }
+
+
+                alldays.push(html`
+                    <tr class=${n%2 == 0 ? 'even-top' : 'odd-top'}> 
+                        <th rowspan=${2}>${day[0]}</th>
+                        <td class='week-type'>нечетна</td>
+                            ${todaysubjectsnechetna}
+                    </tr>
+                    <tr class=${n%2 == 0 ? 'even-bottom' : 'odd-bottom'}>
+                        <td class='week-type'>четна</td>
+                            ${todaysubjectschetna}
+                    </tr>
+                `);
+            }
+            let toreturn = html`
+            <tr>
+                ${alldays}
+            </tr>
+            `
+
+            
+            return toreturn;
+        }
+
+
+            table = html`
+                <table class='student-allsubjects'>
+                    <tbody>
+                        ${getSubjects()}
+                    </tbody>
+                </table>
+            `;
+    }
+
+    render(table, document.getElementById('allSubjects'));
+
+    $("#allSubjects").dialog({
+        resizable: true,
+        height: "auto",
+        width: 'auto',
+        modal: true,
+        classes: {
+            "ui-dialog": "week-subjects"
+          }
+});
+}
 
 function deleteAll() {
     localStorage.clear();
     alert('Всичко е изтрито!');
     location.reload();
 }
-
 
 function activateProgramCode() {
     let code = document.getElementById("programcode").value;
@@ -179,11 +424,13 @@ function askOddOrEven(subjects) { //pita dali e chetna ili nechetna sedmica
             buttons: {
                 "Четна": function () {
                     $(this).dialog("close");
-                    getSubject(subjects, 'четна');
+                    currentweek = 'четна';
+                    getSubject(subjects);
                 },
                 "Нечетна": function () {
                     $(this).dialog("close");
-                    getSubject(subjects, 'нечетна');
+                    currentweek = 'нечетна';
+                    getSubject(subjects);
                 }
             }
         });
@@ -198,57 +445,34 @@ function clearFields() {
     timeEl.innerText = '';
 }
 
-function getSubject(subjects, week) { //tursi koi predmet ima sega potrebitelq
+function getSubject(subjects) { //tursi koi predmet ima sega potrebitelq
     
     document.getElementById('link').remove();
         document.getElementById('userDiv').appendChild(linkEl);
-    
-    switch (date) {
-        case 1:
-            date = 'понеделник';
-            break;
-        case 2:
-            date = 'вторник';
-            break;
-        case 3:
-            date = 'сряда';
-            break;
-        case 4:
-            date = 'четвъртък';
-            break;
-        case 5:
-            date = 'петък';
-            break;
-        case 6:
-            date = 'събота';
-            break;
-        case 0:
-            date = 'неделя';
-            break;
-    }
 
-    if (week) { //if student
-        if (subjects[date][week].length) {
-            for (let sub of subjects[date][week]) {
-                let endT = sub.ends.split(":");
-
-                if (endT[0] > hours) {
-                    displaySubject(sub);
-                    return;
-                } else if (endT[0] == hours && endT[1] >= minutes) {
-                    displaySubject(sub);
-                    return;
-                } else { //ako nqma poveche chasove za dnes
-                    subjectEl.innerText = 'Днес нямате повече часове.';
-                    $('#userDiv').show();
-                }
+    if (currentweek) { //if student
+        if (subjects[date] && subjects[date][currentweek] && subjects[date][currentweek].length) { //if day has any subjects
+                for (let sub of subjects[date][currentweek]) {
+                    let endT = sub.ends.split(":");
+                    
+                    if (endT[0] > hours) {
+                        displaySubject(sub);
+                        return;
+                    } else if (endT[0] == hours && endT[1] >= minutes) {
+                        displaySubject(sub);
+                        return;
+                    } else { //ako nqma poveche chasove za dnes
+                        subjectEl.innerText = 'Днес нямате повече часове.';
+                        $('#userDiv').show();
+                    }
             }
+            
         } else { //ako vuob6te nqma 4asove dnes
             subjectEl.innerText = 'Програмата ви за днес е празна.';
             $('#userDiv').show();
         }
     } else { //if pupil
-        if (subjects[date].length) {
+        if (subjects[date]) {
             for (let sub of subjects[date]) {
                 let endT = sub.ends.split(":");
 
@@ -273,7 +497,7 @@ function getSubject(subjects, week) { //tursi koi predmet ima sega potrebitelq
 }
 
 function displaySubject(sub) { //izkarva predmeta v dom
-    time = `${sub.starts}-${sub.ends}`;
+    let time = `${sub.starts}-${sub.ends}`;
     if (sub.link.length > 0) {
         linkEl.href = sub.link;
     }
@@ -288,14 +512,14 @@ function displaySubject(sub) { //izkarva predmeta v dom
 }
 
 function openSettings() { //otvarq menuto s nastroiki
-    if ($("#settingsbutton").attr("rotation") == -90)
-        $("#settingsbutton").attr("rotation", 90);
-    else
+    if ($("#settingsbutton").attr("rotation") == 90)
         $("#settingsbutton").attr("rotation", -90);
+    else
+        $("#settingsbutton").attr("rotation", 90);
 
     $("#settingsbutton").animateRotate($("#settingsbutton").attr("rotation")); //zavurta kop4eto settings
     $('#settings').toggle("slide", {
-        direction: "left"
+        direction: "right"
     }, 300); //pokazva menuto
 }
 
@@ -307,7 +531,7 @@ function editSubjects() { //from userDivs
     $("#add-subject-hint").hide();
 
     let subjects = localStorage.getItem("program");
-    final = JSON.parse(subjects);
+    let final = JSON.parse(subjects);
 
     //start adding subjects to each day
     for (let day of ['#ponedelnik', '#vtornik', '#srqda', '#chetvurtuk', '#petuk', '#subota', '#nedelq']) {
@@ -317,9 +541,8 @@ function editSubjects() { //from userDivs
             heightStyle: "content"
         });
 
-        //proverqvame dali ima predmeti v tozi den
         let den;
-        switch (day) {
+        switch(day) {
             case '#ponedelnik':
                 den = 'понеделник';
                 break;
@@ -335,7 +558,7 @@ function editSubjects() { //from userDivs
             case '#petuk':
                 den = 'петък';
                 break;
-            case '#subota':
+            case'#subota':
                 den = 'събота';
                 break;
             case '#nedelq':
@@ -343,177 +566,37 @@ function editSubjects() { //from userDivs
                 break;
         }
 
+        //proverqvame dali ima predmeti v tozi den
         if (localStorage.getItem("type") == 'student') {
             //tuk obrabotvame vsi4ki 4etni i tezi koito sa VSQKA sedmica
-            if (final[den].четна.length) { //ako ima chasove v tozi den
-                for (let subject of final[den].четна) {
-                    fillSubjectsForEdit(day, subject);
-                }
-            }
-
-            //tuk preska4ame predmetite koito sa vsqka sedmica za da ne stavat dvoini formi
-            if (final[den].нечетна.length) { //ako ima chasove v tozi den
-                for (let subject of final[den].нечетна) {
-                    if (subject.when != 'всяка') {
-                        fillSubjectsForEdit(day, subject);
+            if (final[den]) { //ako ima chasove v tozi den
+                
+                if (final[den].четна) {
+                    for (let subject of final[den].четна) {
+                        //fillSubjectsForEdit(day, subject);
+                        addSubject(day.substring(1),subject);
                     }
                 }
-            }
+                if (final[den].нечетна) { //ako ima chasove v tozi den
+                    for (let subject of final[den].нечетна) {
+                        if (subject.when != 'всяка') { //tuk preska4ame predmetite koito sa vsqka sedmica za da ne stavat dvoini formi
+                            //fillSubjectsForEdit(day, subject);
+                            addSubject(day.substring(1),subject);
+                        }
+                    }
+                }
+            }   
         } else {
-            for (let subject of final[den]) {
-                fillSubjectsForEdit(day, subject);
+            if (final[den]) {
+                for (let subject of final[den]) {
+                    addSubject(day.substring(1),subject);
+                }
             }
         }
 
 
     }
 }
-
-function fillSubjectsForEdit(day, subject) {
-    let den = day.substring(1);
-    let lastel = $(`${day} h3`).length + 1;
-    let n = +$(day).attr('subjs') + 1;
-    $(day).attr('subjs', n);
-
-    let h3 = $("<h3></h3>").text(`${subject.name}`);
-    let div = $(`<div id=\"${den}-predmet-${n}\" class="predmet">    </div>`);
-    let form = $("<form onsubmit=\"event.preventDefault(); saveForm(this)\"></form>");
-    $(div).append(form);
-
-
-    let el = $(`
-        <label class="cool-input cool-input-name" for="${den}-predmet${n}-name">
-            <input value="${subject.name}" placeholder="&nbsp;" onchange="changeSubjectNameForm(this)" id="${den}-predmet${n}-name" type="text" required>
-            <span class="cool-input-label required">Име на предмет</span>
-            <span class="cool-input-focus-bg"></span>
-        </label>
-        `);
-    $(form).append(el);
-
-    if (subject.type) {
-        if (subject.type == 'лекция') {
-            el = $(`
-        <label class="cool-input-select cool-input-select-type" for="${den}-predmet${n}-type">
-            <select id="${den}-predmet${n}-type" name="type" required>
-                <option value="упражнение" >Упражнение</option>
-                <option value="лекция" selected="selected">Лекция</option>
-            </select>
-          <svg>
-            <use xlink:href="#select-arrow-down"></use>
-          </svg>
-        </label>`);
-        } else {
-            el = $(`
-        <label class="cool-input-select cool-input-select-type" for="${den}-predmet${n}-type">
-            <select id="${den}-predmet${n}-type" name="type" required>
-                <option value="упражнение" selected="selected">Упражнение</option>
-                <option value="лекция">Лекция</option>
-            </select>
-          <svg>
-            <use xlink:href="#select-arrow-down"></use>
-          </svg>
-        </label>`);
-        }
-        $(form).append(el);
-
-        if (subject.when == 'четна') {
-            el = $(`
-        <label class="cool-input-select cool-input-select-week" for="${den}-predmet${n}-when">
-            <select id="${den}-predmet${n}-when" required>
-                <option value="нечетна">В нечетна седмица</option>
-                <option value="четна" selected="selected">В четна седмица</option>
-                <option value="всяка">Всяка седмица</option>
-            </select>
-          <svg>
-            <use xlink:href="#select-arrow-down"></use>
-          </svg>
-        </label>`);
-        } else if (subject.when == 'нечетна') {
-            el = $(`
-        <label class="cool-input-select cool-input-select-week" for="${den}-predmet${n}-when">
-            <select id="${den}-predmet${n}-when" required>
-                <option value="нечетна" selected="selected">В нечетна седмица</option>
-                <option value="четна">В четна седмица</option>
-                <option value="всяка">Всяка седмица</option>
-            </select>
-          <svg>
-            <use xlink:href="#select-arrow-down"></use>
-          </svg>
-        </label>`);
-        } else {
-            el = $(`
-        <label class="cool-input-select cool-input-select-week" for="${den}-predmet${n}-when">
-            <select id="${den}-predmet${n}-when" required>
-                <option value="нечетна">В нечетна седмица</option>
-                <option value="четна">В четна седмица</option>
-                <option value="всяка" selected="selected">Всяка седмица</option>
-            </select>
-          <svg>
-            <use xlink:href="#select-arrow-down"></use>
-          </svg>
-        </label>`);
-        }
-        $(form).append(el);
-    }
-
-    let label = $(`<label class="cool-input-time-starts cool-input" for="${den}-predmet${n}-starts"></label>`);
-    el = $(`<input value="${subject.starts}" placeholder="&nbsp;" onchange="checkTime(this); verifyTimeForm(this)" id="${den}-predmet${n}-starts" type="text" required>`);
-    $(el).timepicker({
-        minTime: '07:00',
-        maxTime: '22:00',
-        step: 15,
-        timeFormat: 'H:i'
-    });
-    $(label).append(el);
-    el = $(`<span class="required cool-input-label">Започва в</span><span class="cool-input-focus-bg"></span>`);
-    $(label).append(el);
-    $(form).append(label);
-
-    label = $(`<label class="cool-input-time-ends cool-input" for="${den}-predmet${n}-ends"></label>`);
-    el = $(`<input value="${subject.ends}" placeholder="&nbsp;" onchange="verifyTimeForm(this)" id="${den}-predmet${n}-ends" type="text" required>`);
-    $(el).timepicker({
-        minTime: '07:15',
-        maxTime: '23:40',
-        step: 15,
-        timeFormat: 'H:i'
-    });
-    $(label).append(el);
-    el = $(`<span class="required cool-input-label">Приключва в</span><span class="cool-input-focus-bg"></span>`);
-    $(label).append(el);
-    $(form).append(label);
-
-    el = $(`
-        <label class="cool-input cool-input-room" for="${den}-predmet${n}-room">
-            <input value="${subject.room}" title="Пример: 1.102Б" placeholder="&nbsp;" id="${den}-predmet${n}-room" type="text">
-            <span class="cool-input-label">Учебна стая</span>
-            <span class="cool-input-focus-bg"></span>
-        </label>
-        `);
-    $(form).append(el);
-
-    el = $(`
-        <label class="cool-input cool-input-link" for="${den}-predmet${n}-link">
-            <input value="${subject.link}" placeholder="&nbsp;" id="${den}-predmet${n}-link" type="url" title="Линк към онлайн лекция/стая">
-            <span class="cool-input-label">Линк</span>
-            <span class="cool-input-focus-bg"></span>
-        </label>
-        `);
-    $(form).append(el);
-
-    el = $(`<span class="cool-input-fields">Полетата маркирани с<span class="required"> </span> са задължителни.</span>`);
-    $(form).append(el);
-
-    el = $(`<button class="form-submit-check"  type=\"submit\">Запази</button>`);
-    $(form).append(el);
-
-    el = $(`<img title="Изтрий предмет" onclick="deleteSubject(this)" class="delete-button" src="svg/delete-subject.svg">`);
-    $(form).append(el);
-
-    $(day).append(h3, div);
-    $(day).accordion("refresh");
-}
-///////////////////////////////////////////////
-
 
 //////////// NEW USER FUNCTIONS ////////////////
 function createSubjects() { //pri purvo polzvane kara potrebitelq da vkara predmetite    
@@ -612,7 +695,9 @@ function createSubjects() { //pri purvo polzvane kara potrebitelq da vkara predm
     }
 }
 
-function saveForm(form) {
+function saveForm(event) {
+    event.preventDefault(); 
+    let form = event.target;
     let n = form.parentNode.id.split('-')[2];
 
     let acord = form.parentNode.parentNode;
@@ -620,7 +705,8 @@ function saveForm(form) {
     $(acord).accordion("option", "active", n);
 }
 
-function deleteSubject(el) { //from when creating subject
+function deleteSubject(event) { //from when creating subject
+    let el = event.target;
     let div = el.parentElement.parentElement;
     let h3 = div.previousSibling;
 
@@ -694,21 +780,13 @@ function validateForms() {
         if (localStorage.getItem("type") == 'student')
             finalizeStudent();
         else
-            finalizepupil();
+            finalizePupil();
     }
 }
 
-function finalizepupil() {
+function finalizePupil() {
     $("#allforms").hide();
-    let allsubj = {
-        'понеделник': [],
-        'вторник': [],
-        'сряда': [],
-        'четвъртък': [],
-        'петък': [],
-        'събота': [],
-        'неделя': []
-    };
+    let allsubj = {};
 
     for (let day of ['#ponedelnik', '#vtornik', '#srqda', '#chetvurtuk', '#petuk', '#subota', '#nedelq']) {
         $('#finalize-' + day.substring(1)).empty();
@@ -754,13 +832,13 @@ function finalizepupil() {
                         d = 'неделя';
                         break;
                 }
-
+                if (!allsubj[d])
+                    allsubj[d] = [];
                 allsubj[d].push(subj);
 
             }
         }
     }
-
     $("#finalize").dialog({
         resizable: false,
         height: "auto",
@@ -797,36 +875,7 @@ function finalizepupil() {
 
 function finalizeStudent() {
     $("#allforms").hide();
-    let allsubj = {
-        'понеделник': {
-            'четна': [],
-            'нечетна': []
-        },
-        'вторник': {
-            'четна': [],
-            'нечетна': []
-        },
-        'сряда': {
-            'четна': [],
-            'нечетна': []
-        },
-        'четвъртък': {
-            'четна': [],
-            'нечетна': []
-        },
-        'петък': {
-            'четна': [],
-            'нечетна': []
-        },
-        'събота': {
-            'четна': [],
-            'нечетна': []
-        },
-        'неделя': {
-            'четна': [],
-            'нечетна': []
-        }
-    };
+    let allsubj = {};
 
     for (let day of ['#ponedelnik', '#vtornik', '#srqda', '#chetvurtuk', '#petuk', '#subota', '#nedelq']) {
         $('#finalize-' + day.substring(1)).empty();
@@ -873,15 +922,24 @@ function finalizeStudent() {
                         break;
                 }
                 if (subj.when == 'всяка') {
+                    if (!allsubj[d])
+                        allsubj[d] = {};
+                    if (!allsubj[d].четна)
+                        allsubj[d].четна = [];
+                    if (!allsubj[d].нечетна)
+                        allsubj[d].нечетна = [];
                     allsubj[d].четна.push(subj);
                     allsubj[d].нечетна.push(subj);
                 } else {
+                    if (!allsubj[d])
+                        allsubj[d] = {};
+                    if (!allsubj[d][subj.when])
+                        allsubj[d][subj.when] = [];
                     allsubj[d][subj.when].push(subj);
                 }
             }
         }
     }
-
     $("#finalize").dialog({
         resizable: false,
         height: "auto",
@@ -916,147 +974,245 @@ function finalizeStudent() {
 
 }
 
-function addSubject(day) {
+function addSubject(day,subject) {
     if (ismobile)
         $('#add-subject-hint-mobile').hide();
     else
         $('#add-subject-hint').hide();
-    let den = day;
-    day = '#' + day;
-    let lastel = $(`${day} h3`).length + 1;
-    let n = +$(day).attr('subjs') + 1;
-    $(day).attr('subjs', n);
 
-    let h3 = $("<h3></h3>").text(`Предмет ${n}`);
-    let div = $(`<div id=\"${den}-predmet-${n}\" class="predmet">    </div>`);
-    let form = $("<form onsubmit=\"event.preventDefault(); saveForm(this)\"></form>");
-    $(div).append(form);
+    let hday = '#' + day;
+    let n = +$(hday).attr('subjs') + 1;
+    let id = day+'-predmet'+n;
 
+    let lastel = $(`${hday} h3`).length + 1;
+    $(hday).attr('subjs', n);
 
-    let el = $(`
-    <label class="cool-input cool-input-name" for="${den}-predmet${n}-name">
-        <input placeholder="&nbsp;" onchange="changeSubjectNameForm(this)" id="${den}-predmet${n}-name" type="text" required>
-        <span class="cool-input-label required">Име на предмет</span>
-        <span class="cool-input-focus-bg"></span>
-    </label>
-    `);
-    $(form).append(el);
+    let h3;
+    if (subject)
+        h3 = $("<h3></h3>").text(subject.name);
+    else 
+        h3 = $("<h3></h3>").text(`Предмет ${n}`);
+    let div = $(`<div id="${id}" class="predmet"></div>`);
 
-    if (localStorage.getItem("type") == 'student') {
-        el = $(`
-        <label class="cool-input-select cool-input-select-type" for="${den}-predmet${n}-type">
-            <select id="${den}-predmet${n}-type" name="type" required>
-                <option value="" disabled="disabled" selected="selected">Избери тип*</option>
-                <option value="упражнение" >Упражнение</option>
-                <option value="лекция">Лекция</option>
-            </select>
-          <svg>
-            <use xlink:href="#select-arrow-down"></use>
-          </svg>
-        </label>`);
-        $(form).append(el);
+    $(hday).append(h3);
+    $(hday).append(div);
 
-
-        el = $(`
-        <label class="cool-input-select cool-input-select-week" for="${den}-predmet${n}-when">
-            <select id="${den}-predmet${n}-when" required>
-                <option value="" disabled="disabled" selected="selected">Избери кога*</option>
-                <option value="нечетна">В нечетна седмица</option>
-                <option value="четна">В четна седмица</option>
-                <option value="всяка">Всяка седмица</option>
-            </select>
-          <svg>
-            <use xlink:href="#select-arrow-down"></use>
-          </svg>
-        </label>`);
-        $(form).append(el);
+    function checkWeek() {
+        if (!subject) {
+            return html`
+                <label class="cool-input-select cool-input-select-week" for="${id}-when">
+                    <select id="${id}-when" required>
+                        <option value="" disabled="disabled" selected="selected">Избери кога*</option>
+                        <option value="нечетна">В нечетна седмица</option>
+                        <option value="четна">В четна седмица</option>
+                        <option value="всяка">Всяка седмица</option>
+                    </select>
+                    <svg>
+                        <use xlink:href="#select-arrow-down"></use>
+                    </svg>
+                </label>
+            `;
+        }
+        else if (subject.when == 'нечетна') {
+            return html`
+                <label class="cool-input-select cool-input-select-week" for="${id}-when">
+                    <select id="${id}-when" required>
+                        <option value="" disabled="disabled">Избери кога*</option>
+                        <option value="нечетна" selected="selected">В нечетна седмица</option>
+                        <option value="четна">В четна седмица</option>
+                        <option value="всяка">Всяка седмица</option>
+                    </select>
+                    <svg>
+                        <use xlink:href="#select-arrow-down"></use>
+                    </svg>
+                </label>
+            `;
+        }
+        else if (subject.when == 'четна') {
+            return html`
+                <label class="cool-input-select cool-input-select-week" for="${id}-when">
+                    <select id="${id}-when" required>
+                        <option value="" disabled="disabled">Избери кога*</option>
+                        <option value="нечетна">В нечетна седмица</option>
+                        <option value="четна" selected="selected">В четна седмица</option>
+                        <option value="всяка">Всяка седмица</option>
+                    </select>
+                    <svg>
+                        <use xlink:href="#select-arrow-down"></use>
+                    </svg>
+                </label>
+            `;
+        }
+        else {
+            return html`
+                <label class="cool-input-select cool-input-select-week" for="${id}-when">
+                    <select id="${id}-when" required>
+                        <option value="" disabled="disabled">Избери кога*</option>
+                        <option value="нечетна">В нечетна седмица</option>
+                        <option value="четна">В четна седмица</option>
+                        <option value="всяка" selected="selected">Всяка седмица</option>
+                    </select>
+                    <svg>
+                        <use xlink:href="#select-arrow-down"></use>
+                    </svg>
+                </label>
+            `;
+        }
     }
 
+    function checkType() {
+        if (!subject) {
+            return html`
+                <label class="cool-input-select cool-input-select-type" for="${id}-type">
+                    <select id="${id}-type" name="type" required>
+                        <option value="" disabled="disabled" selected="selected">Избери тип*</option>
+                        <option value="упражнение">Упражнение</option>
+                        <option value="лекция">Лекция</option>
+                    </select>
+                    <svg>
+                        <use xlink:href="#select-arrow-down"></use>
+                    </svg>
+                </label>
+            `;
+        }
+        else if (subject.type == 'упражнение') {
+            return html`
+                <label class="cool-input-select cool-input-select-type" for="${id}-type">
+                    <select id="${id}-type" name="type" required>
+                        <option value="" disabled="disabled">Избери тип*</option>
+                        <option value="упражнение" selected="selected">Упражнение</option>
+                        <option value="лекция">Лекция</option>
+                    </select>
+                    <svg>
+                        <use xlink:href="#select-arrow-down"></use>
+                    </svg>
+                </label>
+            `;
+        }
+        else {
+            return html`
+            <label class="cool-input-select cool-input-select-type" for="${id}-type">
+                <select id="${id}-type" name="type" required>
+                    <option value="" disabled="disabled">Избери тип*</option>
+                    <option value="упражнение">Упражнение</option>
+                    <option value="лекция" selected="selected">Лекция</option>
+                </select>
+                <svg>
+                    <use xlink:href="#select-arrow-down"></use>
+                </svg>
+            </label>
+        `;
+        }
+    }
 
-    let label = $(`<label class="cool-input-time-starts cool-input" for="${den}-predmet${n}-starts"></label>`);
-    el = $(`<input placeholder="&nbsp;" onchange="checkTime(this); verifyTimeForm(this)" id="${den}-predmet${n}-starts" type="text" required>`);
-    $(el).timepicker({
+     const predmet = () => html`
+        
+            <form @submit=${saveForm}>
+                <label class="cool-input cool-input-name" for="${id}-name">
+                    <input value=${subject ? subject.name : ''} placeholder="&nbsp;" @change=${changeSubjectNameForm} id="${id}-name" type="text" required>
+                    <span class="cool-input-label required">Име на предмет</span>
+                    <span class="cool-input-focus-bg"></span>
+                </label>
+
+                ${localStorage.getItem("type") == 'student'
+                    ? html`
+                        ${checkType()}
+                        ${checkWeek()}
+                    `
+                     : html``
+                }
+
+                <label class="cool-input-time-starts cool-input" for="${id}-starts">
+                    <input value=${subject ? subject.starts : ''} placeholder="&nbsp;" @change=${checkTime} id="${id}-starts" type="text" required>
+                    <span class="required cool-input-label">Започва в</span>
+                    <span class="cool-input-focus-bg"></span>
+                </label>
+
+                <label class="cool-input-time-ends cool-input" for="${id}-ends">
+                    <input value=${subject ? subject.ends : ''} placeholder="&nbsp;" @change=${verifyTimeForm} id="${id}-ends" type="text" required>
+                    <span class="required cool-input-label">Приключва в</span>
+                    <span class="cool-input-focus-bg"></span>
+                </label>
+
+                <label class="cool-input cool-input-room" for="${id}-room">
+                    <input value=${subject && subject.room ? subject.room : ''} title="Пример: 1.102Б" placeholder="&nbsp;" id="${id}-room" type="text">
+                    <span class="cool-input-label">Учебна стая</span>
+                    <span class="cool-input-focus-bg"></span>
+                </label>
+
+                <label class="cool-input cool-input-link" for="${id}-link">
+                    <input value=${subject && subject.link ? subject.link : ''} placeholder="&nbsp;" id="${id}-link" type="url" title="Линк към онлайн лекция/стая">
+                    <span class="cool-input-label">Линк</span>
+                    <span class="cool-input-focus-bg"></span>
+                </label>
+
+                <span class="cool-input-fields">Полетата маркирани с<span class="required"> </span> са задължителни.</span>
+                <button class="form-submit-check"  type="submit">Запази</button>
+                <img title="Изтрий предмет" @click=${deleteSubject} class="delete-button" src="svg/delete-subject.svg"/>
+            </form>
+        
+    `;
+    render(predmet(),document.getElementById(id));
+
+    $(document.getElementById(`${id}-starts`)).timepicker({
         minTime: '07:00',
         maxTime: '22:00',
-        step: 15,
+        step: 5,
         timeFormat: 'H:i'
     });
-    $(label).append(el);
-    el = $(`<span class="required cool-input-label">Започва в</span><span class="cool-input-focus-bg"></span>`);
-    $(label).append(el);
-    $(form).append(label);
 
-    label = $(`<label class="cool-input-time-ends cool-input" for="${den}-predmet${n}-ends"></label>`);
-    el = $(`<input placeholder="&nbsp;" onchange="verifyTimeForm(this)" id="${den}-predmet${n}-ends" type="text" required>`);
-    $(el).timepicker({
+    $(document.getElementById(`${id}-ends`)).timepicker({
         minTime: '07:15',
         maxTime: '23:40',
-        step: 15,
+        step: 5,
         timeFormat: 'H:i'
     });
-    $(label).append(el);
-    el = $(`<span class="required cool-input-label">Приключва в</span><span class="cool-input-focus-bg"></span>`);
-    $(label).append(el);
-    $(form).append(label);
 
-    el = $(`
-    <label class="cool-input cool-input-room" for="${den}-predmet${n}-room">
-        <input title="Пример: 1.102Б" placeholder="&nbsp;" id="${den}-predmet${n}-room" type="text">
-        <span class="cool-input-label">Учебна стая</span>
-        <span class="cool-input-focus-bg"></span>
-    </label>
-    `);
-    $(form).append(el);
-
-    el = $(`
-    <label class="cool-input cool-input-link" for="${den}-predmet${n}-link">
-        <input placeholder="&nbsp;" id="${den}-predmet${n}-link" type="url" title="Линк към онлайн лекция/стая">
-        <span class="cool-input-label">Линк</span>
-        <span class="cool-input-focus-bg"></span>
-    </label>
-    `);
-    $(form).append(el);
-
-    el = $(`<span class="cool-input-fields">Полетата маркирани с<span class="required"> </span> са задължителни.</span>`);
-    $(form).append(el);
-
-    el = $(`<button class="form-submit-check"  type=\"submit\">Запази</button>`);
-    $(form).append(el);
-
-    el = $(`<img title="Изтрий предмет" onclick="deleteSubject(this)" class="delete-button" src="svg/delete-subject.svg">`);
-    $(form).append(el);
-
-    $(day).append(h3, div);
-    $(day).accordion("refresh");
-    if ($(day).attr('deleted') == 'true') { //if element is deleted prevent weird animation 
-        $(day).accordion("option", "active", false);
-        $(day).attr('deleted', 'false');
-    }
-    $(day).accordion("option", "active", lastel - 1);
-}
-
-function checkTime(el) {
-    let type = el.id.split('-');
-    type[2] = 'ends';
-    type = type.join('-');
-    let tm = el.value.split(":");
-    tm[1] = Number(tm[1]) + 15;
-    if (tm[1] == 60) {
-        tm[1] = '00';
-        tm[0]++;
+    $(hday).accordion("refresh");
+    if ($(hday).attr('deleted') == 'true') { //if element is deleted prevent weird animation 
+        $(hday).accordion("option", "active", false);
+        $(hday).attr('deleted', 'false');
     }
 
-    tm = tm.join(':')
-    $('#' + type).timepicker({
-        minTime: tm,
-        maxTime: '23:40',
-        step: 15,
-        timeFormat: 'H:i'
-    });
-    document.getElementById(type).value = tm;
+    if (!subject)
+        $(hday).accordion("option", "active", lastel - 1);
 }
 
-function verifyTimeForm(el) {
+function checkTime(event) {
+    let el = event.target;
+    let startstime = el.value.split(':');
+
+    if (!Number.isNaN(Number(startstime[0])) && !Number.isNaN(Number(startstime[1]))) { //if starts time is good, modify ends time
+        let ends = el.id.split('-');
+        ends[2] = 'ends';
+        ends = ends.join('-');
+
+        let tm = el.value.split(":");
+        tm[1] = Number(tm[1]) + 15;
+        if (tm[1] == 60) {
+            tm[1] = '00';
+            tm[0]++;
+            if (tm[0] < 10)
+                tm[0] = '0'+tm[0];
+        }
+
+        tm = tm.join(':')
+        $('#' + ends).timepicker({
+            minTime: tm,
+            maxTime: '23:40',
+            step: 15,
+            timeFormat: 'H:i'
+        });
+        document.getElementById(ends).value = tm;
+    }
+    else {
+        el.value = '08:00';
+    }
+    verifyTimeForm(event);
+}
+
+function verifyTimeForm(event) {
+    let el = event.target;
     let regex = /^\d\d:\d\d$/;
     if (!el.value.match(/^\d\d:\d\d$/)) {
         el.setCustomValidity("Not a time.");
@@ -1065,8 +1221,36 @@ function verifyTimeForm(el) {
     }
 }
 
-function changeSubjectNameForm(el) {
+function changeSubjectNameForm(event) {
+    let el = event.target;
     el.parentNode.parentNode.parentNode.previousSibling.innerText = el.value;
     $(el.parentNode.parentNode.parentNode.parentNode).accordion("refresh");
 }
 ///////////////////////////////////////////////
+
+window.mobileCheck = function () {
+    let check = false;
+    (function (a) {
+        if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) check = true;
+    })(navigator.userAgent || navigator.vendor || window.opera);
+    return check;
+};
+let ismobile = mobileCheck();
+
+$.fn.animateRotate = function (angle, duration, easing, complete) { //this is for rotating setting button
+    var args = $.speed(duration, easing, complete);
+    var step = args.step;
+    return this.each(function (i, e) {
+        args.complete = $.proxy(args.complete, e);
+        args.step = function (now) {
+            $.style(e, 'transform', 'rotate(' + now + 'deg)');
+            if (step) return step.apply(e, arguments);
+        };
+
+        $({
+            deg: 0
+        }).animate({
+            deg: angle
+        }, args);
+    });
+};

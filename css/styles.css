@@ -1,6 +1,7 @@
 * {
     font-family: 'Roboto', sans-serif;
 }
+
 /*DARK MODE OPTIONS*/
 body.dark-mode {
     background-color: #262626;
@@ -9,7 +10,7 @@ body.dark-mode {
 body.dark-mode #link,
 body.dark-mode .cool-input-select select option,
 body.dark-mode .cool-input *,
-body.dark-mode .cool-input-select select{
+body.dark-mode .cool-input-select select {
     color: white !important;
 }
 
@@ -40,12 +41,39 @@ body.dark-mode .predmet {
     border-color: #096ac8;
 }
 
-body.dark-mode  #ponedelnik h3, 
-body.dark-mode #ponedelnik h3 ~ h3,
+body.dark-mode #ponedelnik h3,
+body.dark-mode #ponedelnik h3~h3,
 body.dark-mode .cool-input-select select,
-body.dark-mode .cool-input-label
-{
+body.dark-mode .cool-input-label {
     color: #75abff !important;
+}
+
+body.dark-mode #settings {
+    box-shadow: 0 0 5px #111;
+}
+
+body.dark-mode #allSubjects .pupil-allsubjects,
+body.dark-mode #allSubjects .pupil-allsubjects th,
+body.dark-mode #allSubjects .pupil-allsubjects td,
+body.dark-mode #allSubjects .pupil-allsubjects thead,
+body.dark-mode #allSubjects .student-allsubjects,
+body.dark-mode #allSubjects .student-allsubjects th,
+body.dark-mode #allSubjects .student-allsubjects td,
+body.dark-mode #allSubjects .student-allsubjects thead
+{
+    /* border-color: white; */
+    border-color:#9098a9;
+}
+
+body.dark-mode .student-allsubjects .odd-bottom,
+body.dark-mode .student-allsubjects .even-bottom,
+body.dark-mode .student-allsubjects .every-week {
+    border-color: #9098a9;
+}
+
+body.dark-mode .student-allsubjects .even-top,
+body.dark-mode .student-allsubjects .odd-top {
+    border-color: #9098a9;
 }
 
 
@@ -193,7 +221,7 @@ form {
     box-shadow: 0 0 0 2px rgba(0, 119, 255, 0.2);
 }
 
-.cool-input-select select:hover + svg {
+.cool-input-select select:hover+svg {
     stroke: #07f;
 }
 
@@ -303,17 +331,17 @@ form {
 
 }
 
-.cool-input input:not(:-moz-placeholder-shown) + .cool-input-label {
+.cool-input input:not(:-moz-placeholder-shown)+.cool-input-label {
     color: rgba(0, 0, 0, 0.5);
     transform: translate3d(0, -12px, 0) scale(0.75);
 }
 
-.cool-input input:not(:-ms-input-placeholder) + .cool-input-label {
+.cool-input input:not(:-ms-input-placeholder)+.cool-input-label {
     color: rgba(0, 0, 0, 0.5);
     transform: translate3d(0, -12px, 0) scale(0.75);
 }
 
-.cool-input input:not(:placeholder-shown) + .cool-input-label {
+.cool-input input:not(:placeholder-shown)+.cool-input-label {
     color: rgba(0, 0, 0, 0.5);
     transform: translate3d(0, -12px, 0) scale(0.75);
 }
@@ -324,12 +352,12 @@ form {
     box-shadow: inset 0 -2px 0 #0077FF;
 }
 
-.cool-input input:focus + .cool-input-label {
+.cool-input input:focus+.cool-input-label {
     color: #0077FF;
     transform: translate3d(0, -12px, 0) scale(0.75);
 }
 
-.cool-input input:focus + .cool-input-label + .cool-input-focus-bg {
+.cool-input input:focus+.cool-input-label+.cool-input-focus-bg {
     transform: scaleX(1);
     transition: all 0.1s ease;
 }
@@ -342,10 +370,6 @@ form button[type="submit"] {
     margin-top: 3vh;
 }
 
-.ui-tabs-tab {
-/*        font-size: 0.9rem;*/
-    }
-    
 .ui-tabs-tab a {
     padding: 4px 6px !important;
 }
@@ -528,7 +552,7 @@ form button[type="submit"] {
     width: 40px;
     height: 40px;
     top: 10px;
-    left: 10px;
+    right: 10px;
     cursor: pointer;
     opacity: 0.8;
 }
@@ -580,14 +604,26 @@ body {
 }
 
 #settings {
-    display: inline-block;
-    margin-top: 70px;
-    padding: 5px 10px;
+    position: absolute;
+    right: 10px;
+    z-index: 1;
+    top: 70px;
+    padding: 10px 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px #ccc;
 }
 
 #settings button {
+    z-index: 2;
+    position: relative;
     display: block;
     margin-top: 5px;
+    padding: 3px 5px;
+    width: 100%;
+}
+
+#settings button:first-of-type {
+    margin-top: 0px;
 }
 
 #subjectsForms {
@@ -668,11 +704,11 @@ body {
 }
 
 #add-subject-hint-mobile {
-        display: block;
-        width: 60vw;
-        margin-left: 10px;
-        margin-top: 10px;
-    }
+    display: block;
+    width: 60vw;
+    margin-left: 10px;
+    margin-top: 10px;
+}
 
 #finalize .ul-title {
     display: block;
@@ -698,7 +734,8 @@ body {
     fill: white;
 }
 
-#qr-svg-object, #qr-svg-link {
+#qr-svg-object,
+#qr-svg-link {
     position: absolute;
     bottom: 10px;
     right: 10px;
@@ -712,52 +749,124 @@ body {
     z-index: 2;
 }
 
+#show-all-subjects {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+#allSubjects .pupil-allsubjects, .student-allsubjects {
+    width: 100%;
+    min-width: 20%;
+    font-size: 0.9rem;
+    text-align: center;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border: 2px solid black;
+}
+
+#allSubjects .pupil-allsubjects a, .student-allsubjects a {
+    text-decoration: none;
+}
+
+#allSubjects .pupil-allsubjects tr:nth-child(even) {
+    background-color: hsla(212, 100%, 50%, 0.397);
+}
+#allSubjects .pupil-allsubjects thead {
+    border: 2px solid black;
+    background-color: #096ac8;
+    color: white;
+}
+
+#allSubjects .pupil-allsubjects td, .student-allsubjects td {
+    border: 1px solid black;
+    overflow: hidden;
+    padding: 10px 5px;
+    word-break: normal;
+}
+
+#allSubjects .pupil-allsubjects th {
+    text-transform: uppercase;
+    border: 1px solid black;
+    overflow: hidden;
+    padding: 10px 5px;
+}
+
+.student-allsubjects th {
+    text-transform: uppercase;
+    overflow: hidden;
+    padding: 10px 5px;
+}
+
+.student-allsubjects th {
+    border: 1px solid black;
+    background-color: #096ac8;
+    color: white;
+}
+
+.student-allsubjects .odd-top, .student-allsubjects .odd-bottom {
+    background-color: hsla(212, 100%, 50%, 0.397);
+    color:
+}
+
+.student-allsubjects .odd-bottom {
+    border: none;
+}
+
+.student-allsubjects tr tr:last-of-type, .student-allsubjects .odd-bottom, .student-allsubjects .even-bottom, .student-allsubjects .every-week {
+    border-bottom: 1px solid black;
+}
+.student-allsubjects .even-top, .student-allsubjects .odd-top {
+    border-top: 1px solid black;
+}
 
 
 /* MOBILE UI */
 
 @media only screen and (max-width: 600px) {
-    
-/*
-    #allforms .ui-tabs-nav {
-        height: 80px;
+
+    .week-subjects {
+        width: 100vw !important;
+        padding: 0px;
+        margin: 0px;
+        border: none !important;
     }
-*/
-    
+
     #allforms .ui-tabs-tab {
         font-size: 0.85rem;
     }
-    
+
     #allforms li.ui-tabs-tab {
         border: 1px solid #c5c5c5;
         border-radius: 3px;
     }
-    
+
     #allforms .ui-tabs-anchor {
         padding: 4px 6px !important;
     }
-    
+
     #link {
         width: 100%;
         left: 0;
     }
-    
-    #allforms li.ui-tabs-tab:nth-of-type(6), #allforms li.ui-tabs-tab:nth-of-type(7) {
+
+    #allforms li.ui-tabs-tab:nth-of-type(6),
+    #allforms li.ui-tabs-tab:nth-of-type(7) {
         margin-top: 5px;
         margin-bottom: 4px;
     }
-    
-    
-    
-/*
+
+
+
+    /*
     .finalize-buttons {
         width: 40%;
         font-size: 0.9rem !important;
     }
 */
-    
-    
-    
-    
-    
+
+
+
+
+
 }
