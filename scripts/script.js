@@ -1,4 +1,4 @@
-import {html, render} from '/node_modules/lit-html/lit-html.js';
+import {html, render} from 'https://unpkg.com/lit-html?module';
 window.onload=addEventListeners;
 
 let date = new Date().getDay();
