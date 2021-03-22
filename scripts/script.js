@@ -448,10 +448,16 @@ function clearFields() {
 function getSubject(subjects) { //tursi koi predmet ima sega potrebitelq
     
     document.getElementById('link').remove();
-        document.getElementById('userDiv').appendChild(linkEl);
-
+    document.getElementById('userDiv').appendChild(linkEl);
     if (currentweek) { //if student
         if (subjects[date] && subjects[date][currentweek] && subjects[date][currentweek].length) { //if day has any subjects
+            subjects[date][currentweek] = subjects[date][currentweek].sort((a,b) => { //sorts subjects by time for the day
+                if (a.starts > b.starts)
+                    return 1;
+                else
+                    return -1;
+            });
+            
                 for (let sub of subjects[date][currentweek]) {
                     let endT = sub.ends.split(":");
                     
@@ -471,8 +477,16 @@ function getSubject(subjects) { //tursi koi predmet ima sega potrebitelq
             subjectEl.innerText = 'Програмата ви за днес е празна.';
             $('#userDiv').show();
         }
-    } else { //if pupil
+    } 
+    else { //if pupil
         if (subjects[date]) {
+            subjects[date] = subjects[date].sort((a, b) => { //sorts subjects by time for the day
+                if (a.starts > b.starts)
+                    return 1;
+                else
+                    return -1;
+            });
+
             for (let sub of subjects[date]) {
                 let endT = sub.ends.split(":");
 
@@ -1188,9 +1202,13 @@ function checkTime(event) {
         ends = ends.join('-');
 
         let tm = el.value.split(":");
-        tm[1] = Number(tm[1]) + 15;
-        if (tm[1] == 60) {
-            tm[1] = '00';
+        tm[1] = Number(tm[1]) + 45;
+        if (tm[1] >= 60) {
+            tm[1] = tm[1]-60;
+            if (tm[1] == 0)
+                tm[1] = '00';
+            if (tm[1] < 9 && tm[1] > 0)
+                tm[1] = '0'+tm[1];
             tm[0]++;
             if (tm[0] < 10)
                 tm[0] = '0'+tm[0];
