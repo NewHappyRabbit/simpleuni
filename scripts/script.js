@@ -40,12 +40,14 @@ function addEventListeners() {
     document.getElementById('edit-program').addEventListener('click',editSubjects);
     document.getElementById('share-program').addEventListener('click',createProgramCode);
     document.getElementById('delete-program').addEventListener('click',deleteAll);
-    document.getElementById('change-dark-mode').addEventListener('click',changeDarkMode);
     document.getElementById('finalize-form-button').addEventListener('click',validateForms);
     document.querySelectorAll('#tabs img[title="Добави предмет"]').forEach((img) => {
         img.addEventListener('click',() => {
             addSubject(img.parentNode.previousElementSibling.id);
         });
+    });
+    document.querySelectorAll('.icon').forEach(el => {
+        el.addEventListener('click', changeDarkMode);
     });
     checkUser();
 }
@@ -282,9 +284,12 @@ function showAllSubjects() {
 }
 
 function deleteAll() {
-    localStorage.clear();
-    alert('Всичко е изтрито!');
-    location.reload();
+    let confirmed = confirm('Сигурни ли сте че изкате да изтриете своята програма?');
+    if (confirmed == true) {
+        localStorage.clear();
+        alert('Всичко е изтрито!');
+        location.reload();
+    }
 }
 
 function activateProgramCode() {
@@ -301,7 +306,7 @@ function activateProgramCode() {
                 // The object was retrieved successfully.
                 localStorage.setItem("program", program.attributes.Program.program);
                 localStorage.setItem("type", program.attributes.Program.type);
-                localStorage.setItem("userfirsttime", true);
+                localStorage.setItem("userfirstusetime", true);
                 alert('Успешно въведена програма!');
                 window.location.replace("index.html");
 
@@ -334,11 +339,11 @@ function createProgramCode() {
         });
 }
 
-
 function checkUser() { //proverqva dali potrebitelq vliza za purvi put ili ve4e e vkaral predmeti
 
     //check dark mode settings
-    darkMode();
+    updateDarkModeBody();
+    rotateDarkModeWheel();
     clearFields();
     
     let subjects = localStorage.getItem("program");
@@ -356,36 +361,55 @@ function checkUser() { //proverqva dali potrebitelq vliza za purvi put ili ve4e 
 
 function changeDarkMode() {
     let preference = localStorage.getItem("dark-mode");
+    let mode;
     switch (preference) {
         case 'off':
-            localStorage.setItem("dark-mode", "on");
-            darkMode();
+            mode = 'on';
             break;
         case 'on':
-            localStorage.setItem("dark-mode", "auto");
-            darkMode();
+            mode = 'auto';
             break;
         case 'auto':
-            localStorage.setItem("dark-mode", "off");
-            darkMode();
+            mode = 'off';
             break;
         default:
-            localStorage.setItem("dark-mode", "on");
-            darkMode();
+            mode = 'on';
             break;
     }
+
+    localStorage.setItem("dark-mode", mode);
+    const icons = document.querySelector('#icons');
+    const rotation = parseInt(getComputedStyle(icons).getPropertyValue('--rotation'));
+    icons.style.setProperty('--rotation', rotation - 120);
+    updateDarkModeBody();
+
 }
 
-function darkMode() {
-    let darkthemecss = document.getElementById('darktheme');
-
+function rotateDarkModeWheel() {
     let preference = localStorage.getItem("dark-mode");
-    let button = document.getElementById('change-dark-mode');
-    
-    if ( preference == 'auto') {
-        button.innerText = 'Тъмен режим: Автоматичен';
-        let checkSystem = window.matchMedia("(prefers-color-scheme: dark)");
+    let icons = document.querySelector('#icons');
 
+    icons.style['transition-duration'] = '0s';
+    if (preference == 'auto') {
+        icons.style.setProperty('--rotation', -240);
+    }
+    else if (preference == 'on') {
+        icons.style.setProperty('--rotation', -120);
+    }
+    else if (preference == null || preference == 'off') {
+        icons.style.setProperty('--rotation', 0);
+    }
+    setTimeout(function () {
+        icons.style['transition-duration'] = '1s';
+    }, 1);
+}
+
+function updateDarkModeBody() {
+    let darkthemecss = document.getElementById('darktheme');
+    let preference = localStorage.getItem("dark-mode");
+
+    if (preference == 'auto') {
+        let checkSystem = window.matchMedia("(prefers-color-scheme: dark)");
         if (checkSystem.matches) {
             document.body.classList.add("dark-mode");
             darkthemecss.disabled = '';
@@ -393,14 +417,13 @@ function darkMode() {
             document.body.classList.remove("dark-mode");
             darkthemecss.disabled = 'disabled';
         }
-    } else if (preference == 'on') {
-        button.innerText = 'Тъмен режим: Включен';
+    } 
+    else if (preference == 'on') {
         document.body.classList.add("dark-mode");
         darkthemecss.disabled = '';
     }
         
     else if (preference == null || preference == 'off') {
-        button.innerText = 'Тъмен режим: Изключен';
         document.body.classList.remove("dark-mode");
         darkthemecss.disabled = 'disabled';
     }
@@ -449,7 +472,7 @@ function getSubject(subjects) { //tursi koi predmet ima sega potrebitelq
     
     document.getElementById('link').remove();
     document.getElementById('userDiv').appendChild(linkEl);
-    if (currentweek) { //if student
+    if (localStorage.getItem('type') == 'student') { //if student
         if (subjects[date] && subjects[date][currentweek] && subjects[date][currentweek].length) { //if day has any subjects
             subjects[date][currentweek] = subjects[date][currentweek].sort((a,b) => { //sorts subjects by time for the day
                 if (a.starts > b.starts)
@@ -540,7 +563,22 @@ function openSettings() { //otvarq menuto s nastroiki
 function editSubjects() { //from userDivs
     $('#userDiv').hide();
     $('#subjectsForms').show();
-    $("#tabs").tabs();
+    
+    if (localStorage.getItem('type') == 'student') {
+        $("#tabs").tabs({
+            classes: {
+                "ui-tabs": "student-tabs"
+            }
+        });
+    }
+    else {
+        $("#tabs").tabs({
+            classes: {
+                "ui-tabs": "pupil-tabs"
+            }
+        });
+    }
+
     $("#allforms").show();
     $("#add-subject-hint").hide();
 
@@ -652,10 +690,6 @@ function createSubjects() { //pri purvo polzvane kara potrebitelq da vkara predm
                                 }
                         }]
                     });
-
-
-
-                    localStorage.setItem("userfirstusetime", "true"); //polzvame za da dadem hintove pri purvo polzvane
                 }
             },
             {
@@ -677,20 +711,26 @@ function createSubjects() { //pri purvo polzvane kara potrebitelq da vkara predm
                                 text: 'Студент',
                                 click: function () {
                                     $(this).dialog("close");
-                                    $("#tabs").tabs();
+                                    $("#tabs").tabs({
+                                        classes: {
+                                            "ui-tabs": "student-tabs"
+                                        }
+                                    });
+                                    localStorage.setItem('type','student');
                                     $("#allforms").show();
-                                    localStorage.setItem("userfirstusetime", "true"); //polzvame za da dadem hintove pri purvo polzvane
-                                    localStorage.setItem("type", "student");
                                 }
                             },
                             {
                                 text: 'Ученик',
                                 click: function () {
                                     $(this).dialog("close");
-                                    $("#tabs").tabs();
+                                    $("#tabs").tabs({
+                                        classes: {
+                                            "ui-tabs": "pupil-tabs"
+                                        }
+                                    });
+                                    localStorage.setItem('type', 'pupil');
                                     $("#allforms").show();
-                                    localStorage.setItem("userfirstusetime", "true"); //polzvame za da dadem hintove pri purvo polzvane
-                                    localStorage.setItem("type", "pupil");
                                 }
                             }
                         ]
@@ -879,6 +919,8 @@ function finalizePupil() {
                     $(this).dialog("close");
                     localStorage.setItem("program", `${JSON.stringify(allsubj)}`);
                     checkUser();
+                    localStorage.setItem("userfirstusetime", "true"); //polzvame za da dadem hintove pri purvo polzvane
+                    localStorage.setItem("type", "pupil");
                 }
             }
         ]
@@ -980,6 +1022,8 @@ function finalizeStudent() {
                     $(this).dialog("close");
                     localStorage.setItem("program", `${JSON.stringify(allsubj)}`);
                     checkUser();
+                    localStorage.setItem("userfirstusetime", "true"); //polzvame za da dadem hintove pri purvo polzvane
+                    localStorage.setItem("type", "student");
                 }
             }
         ]
@@ -1010,8 +1054,10 @@ function addSubject(day,subject) {
 
     $(hday).append(h3);
     $(hday).append(div);
+    console.log(subject);
 
     function checkWeek() {
+        console.log('hi');
         if (!subject) {
             return html`
                 <label class="cool-input-select cool-input-select-week" for="${id}-when">
@@ -1130,8 +1176,8 @@ function addSubject(day,subject) {
 
                 ${localStorage.getItem("type") == 'student'
                     ? html`
-                        ${checkType()}
-                        ${checkWeek()}
+                        ${ checkType() }
+                        ${ checkWeek() }
                     `
                      : html``
                 }
