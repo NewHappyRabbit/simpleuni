@@ -1,4 +1,11 @@
+import './jquery-3.5.1.min.js';
+import './jquery-ui.min.js';
 import {html, render} from 'https://unpkg.com/lit-html?module';
+import './jquery.timepicker.min.js';
+import './parse.min.js';
+Parse.initialize("OhHXlNOYVhnRv5WwWGCijNSuFqS3u77NRiioEIGS", "m2g7YwRQe7W2VUdsBtn3MAJxomzUf6azp9FibaWQ"); 
+Parse.serverURL = 'https://parseapi.back4app.com/';
+
 window.onload=addEventListeners;
 
 let date = new Date().getDay();
@@ -49,7 +56,29 @@ function addEventListeners() {
     document.querySelectorAll('.icon').forEach(el => {
         el.addEventListener('click', changeDarkMode);
     });
+    
+    document.querySelector('#migrate button').addEventListener('click', migrate);
+    
     checkUser();
+}
+
+function migrate() {
+    const Back4app = Parse.Object.extend("programs");
+    let program = {
+        program: localStorage.getItem("program"),
+        type: localStorage.getItem("type")
+    };
+    const back4app = new Back4app();
+    back4app.set("Program", program);
+    back4app.save()
+        .then((object) => {
+            // Success
+            gtag('event', 'interaction', {'event_category': 'user migrated', 'event_label': `${object.id}`});
+            window.location.replace("https://mydigitalschedule.web.app/migrate/"+object.id);
+        }, (error) => {
+            // Save fails
+            alert('Възникна грешка: ' + error.message);
+        });
 }
 
 function showAllSubjects() {
@@ -286,6 +315,7 @@ function showAllSubjects() {
 function deleteAll() {
     let confirmed = confirm('Сигурни ли сте че изкате да изтриете своята програма?');
     if (confirmed == true) {
+        gtag('event', 'interaction', {'event_category': 'user deleted his schedule'});
         localStorage.clear();
         alert('Всичко е изтрито!');
         location.reload();
@@ -309,11 +339,11 @@ function activateProgramCode() {
                 localStorage.setItem("userfirstusetime", true);
                 alert('Успешно въведена програма!');
                 window.location.replace("index.html");
-
+                gtag('event', 'interaction', {'event_category': 'user successful entered a shared schedule code', 'event_label': `${code}`});
             }, (error) => {
-                // The object was not retrieved successfully.
                 //alert('Възникна грешка: ' + error);
                 alert('Невалиден код.');
+                gtag('event', 'interaction', {'event_category': 'user failed to enter a valid shared schedule code'});
             });
     }
 
@@ -333,13 +363,15 @@ function createProgramCode() {
         .then((object) => {
             // Success
             alert('Вашият код за споделяне: ' + object.id);
+            gtag('event', 'interaction', {'event_category': 'user created a shared schedule code', 'event_label': `${object.id}`});
         }, (error) => {
             // Save fails
+            gtag('event', 'errors', {'event_category': 'error when creating a shared schedule code', 'event_label': `${error.message}`});
             alert('Възникна грешка: ' + error.message);
         });
 }
 
-function checkUser() { //proverqva dali potrebitelq vliza za purvi put ili ve4e e vkaral predmeti
+function checkUser() {
 
     //check dark mode settings
     updateDarkModeBody();
@@ -407,7 +439,6 @@ function rotateDarkModeWheel() {
 function updateDarkModeBody() {
     let darkthemecss = document.getElementById('darktheme');
     let preference = localStorage.getItem("dark-mode");
-
     if (preference == 'auto') {
         let checkSystem = window.matchMedia("(prefers-color-scheme: dark)");
         if (checkSystem.matches) {
@@ -469,7 +500,6 @@ function clearFields() {
 }
 
 function getSubject(subjects) { //tursi koi predmet ima sega potrebitelq
-    
     document.getElementById('link').remove();
     document.getElementById('userDiv').appendChild(linkEl);
     if (localStorage.getItem('type') == 'student') { //if student
@@ -921,6 +951,7 @@ function finalizePupil() {
                     checkUser();
                     localStorage.setItem("userfirstusetime", "true"); //polzvame za da dadem hintove pri purvo polzvane
                     localStorage.setItem("type", "pupil");
+                    gtag('event', 'interaction', {'event_category': 'new pupil created a schedule'});
                 }
             }
         ]
@@ -1024,6 +1055,7 @@ function finalizeStudent() {
                     checkUser();
                     localStorage.setItem("userfirstusetime", "true"); //polzvame za da dadem hintove pri purvo polzvane
                     localStorage.setItem("type", "student");
+                    gtag('event', 'interaction', {'event_category': 'new student created a schedule'});
                 }
             }
         ]
@@ -1054,10 +1086,8 @@ function addSubject(day,subject) {
 
     $(hday).append(h3);
     $(hday).append(div);
-    console.log(subject);
 
     function checkWeek() {
-        console.log('hi');
         if (!subject) {
             return html`
                 <label class="cool-input-select cool-input-select-week" for="${id}-when">
